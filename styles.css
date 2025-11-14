@@ -1,0 +1,58 @@
+.container  {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+}
+
+.play-field {
+  display: grid;
+  grid-template-columns: repeat(9, auto);
+  gap: 2px;
+  align-items: center;
+  justify-items: center;
+}
+
+.play-item {
+  box-sizing: border-box;
+  width: 70px;
+  height: 70px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  transition: all 0.1s ease;
+}
+
+.play-item:hover {
+  background-color: rgba(227, 222, 222, 0.3);
+  transform: scale(1.02);
+}
+
+.play-item.selected {
+  background-color: rgb(170 250 177 / 30%) !important;
+}
+
+.play-item.correct {
+  border: 2px solid #3ac63a;
+}
+
+.play-item.error {
+  border: 2px solid #f94040;
+}
+
+.controls {
+  margin-left: 20px;
+}
+
+.mode {
+  border: 1px solid #ccc;
+}
+.mode p {
+  margin: 0;
+}
