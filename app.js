@@ -134,8 +134,6 @@ function generateUI() {
         startBtn.classList.remove("shake");
       }, { once: true });
     }
-
-    
   })
 
 
@@ -314,6 +312,7 @@ function handleSelection(cell) {
   if (!firstEl) {
     firstEl = { row: elRow, col: elCol, el: cell };
     cell.classList.add("selected");
+    playSound("select", 0.7);
     return;
   }
 
@@ -326,6 +325,7 @@ function handleSelection(cell) {
 
     if (cell === firstEl.el) {
       firstEl.el.classList.remove("selected");
+      playSound("deselect", 0.7);
       firstEl = null;
       return;
     }
@@ -633,6 +633,8 @@ let soundBuffers = {};
 const soundFiles = [
   "invalid.wav",
   "valid.mp3",
+  "select.mp3",
+  "deselect.mp3",
 ];
 
 async function preloadSounds() {
@@ -646,12 +648,18 @@ async function preloadSounds() {
 }
 preloadSounds();
 
-function playSound(key) {
+function playSound(key, volume = 1) {
   if (!soundBuffers[key]) return;
 
   const source = audioCtx.createBufferSource();
   source.buffer = soundBuffers[key];
-  source.connect(audioCtx.destination);
+
+  const gainNode = audioCtx.createGain();
+  gainNode.gain.value = volume;
+
+  source.connect(gainNode);
+  gainNode.connect(audioCtx.destination);
+
   source.start();
 }
 
