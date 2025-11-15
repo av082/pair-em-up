@@ -11,7 +11,7 @@ let hintUse = 5;
 
 let mainMatrix = null;
 generateMatrix()
-function generateMatrix(arr = sourceArr, gMode = "classic") {
+function generateMatrix(arr = sourceArr, gMode) {
   gameMode = gMode;
 
   if (gMode === "classic") {
@@ -56,9 +56,94 @@ function printMatrix() {
 
 generateUI();
 function generateUI() {
+  const startScreen = document.createElement("div");
+  startScreen.id = "start-screen";
+  startScreen.className = "modal";
+  document.body.prepend(startScreen);
+
+  const modalContent = document.createElement("div");
+  modalContent.className = "modal-content";
+  startScreen.append(modalContent);
+
+  const modalTitle = document.createElement("h1");
+  modalTitle.className = "game-title";
+  modalTitle.textContent = "Pair 'em Up Game";
+  modalContent.append(modalTitle);
+
+  const authorLink = document.createElement("a");
+  authorLink.className = "author-link";
+  authorLink.href = "https://github.com/av082";
+  authorLink.textContent = "Author's Git (av082)";
+  authorLink.target = "_blank";
+  modalContent.append(authorLink);
+
+  const modeH2 = document.createElement("h2");
+  modeH2.textContent = "Choose game mode:";
+  modalContent.append(modeH2);
+
+  const modeButtons = document.createElement("fieldset");
+  modeButtons.className = "mode-buttons";
+  modalContent.append(modeButtons);
+
+  const modesTypes = [
+    { mode: "classic", label: "Classic" },
+    { mode: "random", label: "Random" },
+    { mode: "chaotic", label: "Chaotic" }
+  ];
+
+  modesTypes.forEach(item => {
+    const label = document.createElement("label");
+    const btn = document.createElement("input");
+    const span = document.createElement("span");
+
+    btn.dataset.mode = item.mode;
+    btn.type = "radio";
+    btn.value = item.mode;
+    btn.name = "gameMode";
+    span.className = "wrapper";
+    span.textContent = item.label;
+
+    label.prepend(btn);
+    btn.after(span);
+
+    modeButtons.append(label);
+  });
+
+  const startBtn = document.createElement("button");
+  startBtn.className = "startBtn";
+  startBtn.textContent = "Start New Game";
+  modalContent.append(startBtn);
+
+
+  startBtn.addEventListener("click", () => {
+    let anyChecked = false;
+    for (const input of modeButtons.elements) {
+      if (input.checked) {
+        anyChecked = input.value;
+        generateMatrix(sourceArr, anyChecked);
+        gameScore = 0;
+        renderGridItems();
+        startScreen.style.display = "none";
+      }
+    }
+
+    if (!anyChecked) {
+      startBtn.classList.add("shake");
+
+      startBtn.addEventListener("animationend", () => {
+        startBtn.classList.remove("shake");
+      }, { once: true });
+    }
+
+    
+  })
+
+
+  // GAME FIELD
+  const scriptEl = document.querySelector("script");
   const gameContainer = document.createElement("div");
   gameContainer.className = "container";
-  document.body.prepend(gameContainer);
+  scriptEl.before(gameContainer);
 
   const h1 = document.createElement("h1");
   h1.textContent = "Pair them Game";
@@ -98,7 +183,7 @@ function generateUI() {
     renderGridItems();
   });
   const chaoticBtn = document.createElement("button");
-  chaoticBtn.textContent = "Custom";
+  chaoticBtn.textContent = "Chaotic";
   chaoticBtn.addEventListener("click", () => {
     generateMatrix(sourceArr, "chaotic");
     gameScore = 0;
@@ -189,6 +274,15 @@ function generateUI() {
 function renderGridItems(arr = mainMatrix) {
   const grid = document.querySelector(".play-field");
   grid.innerHTML = "";
+
+  if (!arr) {
+    for (let i = 0; i < MAXCOL; i++) {
+      const item = document.createElement("div");
+      item.className = "play-item";
+      grid.append(item);
+    }
+    return
+  }
   
   for (let i = 0; i < arr.length; i++) {
     for (let j = 0; j < arr[i].length; j++) {
@@ -446,7 +540,7 @@ function shuffleMatrix(matrix = mainMatrix) {
 
 function eraseNumber(matrix = mainMatrix) {
   const elements = [];
-  
+
   if (!elements) return;
 
   matrix.forEach((row, i) => {
@@ -596,6 +690,8 @@ function stopWatch(el) {
 
 function countWinningPairs(matrix = mainMatrix) {
   let count = 0;
+
+  if (!matrix) return;
 
   for (let r1 = 0; r1 < matrix.length; r1++) {
     for (let c1 = 0; c1 < matrix[r1].length; c1++) {

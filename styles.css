@@ -1,6 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Forum&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.851);
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: white;
+  padding: 50px;
+  border-radius: 12px;
+  text-align: center;
+  margin-top: 8vh;
+  box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
+  -webkit-box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
+  -moz-box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
+}
+
+.modal-content a {
+  color: #878787;
+}
+
+.mode-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  padding: 0;
+  border: 0;
+  margin-top: 15px;
+}
+
+.mode-buttons label {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  background-color: #fff;
+  color: #a4a4a4;
+  font-weight: 400;
+  letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+
+.mode-buttons span {
+  display: inline-block;
+  padding: 7px 0;
+  padding-left: 40px;
+  padding-right: 20px;
+  border: 2px solid #a4a4a4;
+  border-radius: 25px;
+}
+
+.mode-buttons label:hover span {
+  background-color: #4387ed2d;
+  border: 2px solid #4386ed;
+  color: #4386ed;
+}
+
+.mode-buttons label:hover {
+  color: #4386ed;
+}
+
+.mode-buttons input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-top: 0;
+  margin-right: 10px;
+  margin-left: 20px;
+  position: absolute;
+  
+}
+
+input[type='radio']:after {
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -3px;
+    position: absolute;
+    background-color: #a4a4a4;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 2px solid white;
+}
+
+.mode-buttons label:hover [type='radio']::after {
+  background-color: #4386ed;
+}
+
+input[type='radio']:checked:after {
+  background-color: #4386ed;
+}
+
+input[type='radio']:checked + span {
+  border: 2px solid #4386ed;
+  color: #4386ed;
+}
+
+.startBtn {
+  margin-top: 15px;
+  font-size: 19px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 3px solid #3ac63a;
+  padding: 12px 25px;
+  color: #3ac63a;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.startBtn:hover {
+  background-color: #3ac63a;
+  color: #fff;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  15% { transform: translateX(-5px); }
+  30% { transform: translateX(5px); }
+  45% { transform: translateX(-5px); }
+  60% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.4s ease;
+}
+
+
+.modal-content h1 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 38px;
+}
+
+.modal-content h2 {
+  margin: 0;
+  margin-top: 30px;
+  font-weight: 400;
+  font-size: 20px;
+}
+
+
 .container  {
   margin: 0 auto;
   max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 main {
