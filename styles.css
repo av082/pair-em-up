@@ -53,6 +53,7 @@ a {
   color: #a4a4a4;
   font-weight: 400;
   letter-spacing: 1px;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -160,16 +161,89 @@ input[type='radio']:checked + span {
 
 
 .container  {
+  position: relative;
   margin: 0 auto;
-  max-width: 1200px;
+  max-width: 900px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 20px;
+}
+
+.container h1 {
+  margin: 0;
+  color: #4386ed;
+}
+
+.headerWrapper {
+  width: 100%;
+  max-width: 647px;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+}
+
+#selectedMode {
+  margin: 0;
+  margin-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #878787;
+  width: 200px;
+  color: #878787;
+}
+
+.settingsWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.btnsBlock {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+button {
+  cursor: pointer;
 }
 
 main {
   display: flex;
+  flex-direction: column;
+}
+
+.controls {
+  padding-bottom: 5px;
+}
+
+.buttonsWrapper {
+  display: flex;
   flex-direction: row;
+  gap: 5px;
+}
+
+.buttonsWrapper button {
+  width: 100px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: start;
+  background-color: #fff;
+  border: 2px solid #4386ed;
+  border-radius: 20px;
+  padding: 5px 15px;
+  color: #4386ed;
+  transition: all 0.2s ease;
+}
+
+.buttonsWrapper button:hover {
+  background-color: rgba(67, 135, 237, 0.1);
+}
+
+.buttonsWrapper span {
+  font-size: 12px;
+  color: #878787;
 }
 
 .play-field {
@@ -190,6 +264,7 @@ main {
   justify-content: center;
   align-items: center;
   font-size: 30px;
+  border-radius: 10px;
   transition: all 0.1s ease;
 }
 
@@ -211,7 +286,9 @@ main {
 }
 
 .controls {
-  margin-left: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .mode {

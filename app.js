@@ -123,6 +123,7 @@ function generateUI() {
         generateMatrix(sourceArr, anyChecked);
         gameScore = 0;
         renderGridItems();
+        selectedMode.textContent = `Mode: ${gameMode[0].toUpperCase() + gameMode.slice(1)}`
         startScreen.style.display = "none";
       }
     }
@@ -143,10 +144,53 @@ function generateUI() {
   gameContainer.className = "container";
   scriptEl.before(gameContainer);
 
+  const headerWrapper = document.createElement("div");
+  headerWrapper.className = "headerWrapper";
+  gameContainer.append(headerWrapper);
+
+  const titleWrapper = document.createElement("div");
+  titleWrapper.className = "titleWrapper";
+  headerWrapper.append(titleWrapper);
+
   const h1 = document.createElement("h1");
   h1.textContent = "Pair them Game";
-  gameContainer.prepend(h1);
+  titleWrapper.prepend(h1);
 
+  const selectedMode = document.createElement("p");
+  selectedMode.id = "selectedMode";
+  selectedMode.textContent = "";
+  titleWrapper.append(selectedMode);
+
+  const settingsWrapper = document.createElement("div");
+  settingsWrapper.className = "settingsWrapper";
+  headerWrapper.append(settingsWrapper);
+
+  const toolsBlock = document.createElement("div");
+  toolsBlock.className = "settingsBlock";
+  settingsWrapper.append(toolsBlock);
+
+
+  const btnsBlock = document.createElement("div");
+  btnsBlock.className = "btnsBlock";
+  settingsWrapper.append(btnsBlock);
+
+  const continueBtn = document.createElement("button");
+  continueBtn.textContent = "Contnue";
+  continueBtn.dataset.type = "continue";
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "Save";
+  saveBtn.dataset.type = "save";
+  const resetBtn = document.createElement("button");
+  resetBtn.textContent = "Reset";
+  resetBtn.dataset.type = "reset";
+
+  btnsBlock.append(continueBtn, saveBtn, resetBtn);
+
+  settingsWrapper.addEventListener("click", (e) => {
+    return;
+  })
+
+  // MAIN SECTION
   const main = document.createElement("main");
   gameContainer.append(main);
 
@@ -154,109 +198,95 @@ function generateUI() {
   grid.className = "play-field";
   const controls = document.createElement("div");
   controls.className = "controls";
-  main.append(grid, controls);
+  main.append(controls, grid);
 
-  // Timer, Score, Modes
-  const timer = document.createElement("div");
-  timer.textContent = "Timer";
-  const score = document.createElement("div");
-  score.className = "score";
-  score.textContent = `Score: ${gameScore === null ? 0 : gameScore} of 100`;
-  const modes = document.createElement("div");
-  modes.className = "mode";
-  const modesTitle = document.createElement("p");
-  modesTitle.textContent = "Mode:";
-  const classicBtn = document.createElement("button");
-  classicBtn.textContent = "Classic";
-  classicBtn.addEventListener("click", () => {
-    generateMatrix(sourceArr, "classic");
-    gameScore = 0;
-    renderGridItems();
-  });
-  const randomBtn = document.createElement("button");
-  randomBtn.textContent = "Random";
-  randomBtn.addEventListener("click", () => {
-    generateMatrix(sourceArr, "random");
-    gameScore = 0;
-    renderGridItems();
-  });
-  const chaoticBtn = document.createElement("button");
-  chaoticBtn.textContent = "Chaotic";
-  chaoticBtn.addEventListener("click", () => {
-    generateMatrix(sourceArr, "chaotic");
-    gameScore = 0;
-    renderGridItems();
-  })
-  modes.append(modesTitle, classicBtn, randomBtn, chaoticBtn);
-  controls.append(timer, score, modes);
 
   // Add Numbers Button
-  const appendBtnWrapper = document.createElement("div");
-  appendBtnWrapper.className = "appendBtn-wrapper";
+  const buttonsWrapper = document.createElement("div");
+  buttonsWrapper.className = "buttonsWrapper";
+  controls.append(buttonsWrapper);
+
   const appendBtn = document.createElement("button");
-  appendBtn.textContent = "Add Numbers (10 left)";
+  appendBtn.textContent = "Add nums";
+  appendBtn.append(document.createElement("br"));
+  const appentUses = document.createElement("span");
+  appentUses.textContent = `${addNumber} left`;
+  appendBtn.append(appentUses);
+  buttonsWrapper.append(appendBtn);
   appendBtn.addEventListener("click", () => {
     if (addNumber > 0) {
       appendNumbers();
       addNumber -= 1;
-      appendBtn.textContent = `Add Numbers (${addNumber} left)`;
+      appentUses.textContent = `${addNumber} left`;
     }
   });
-  appendBtnWrapper.append(appendBtn);
-  controls.append(appendBtnWrapper);
 
   // Shuffle Numbers Button
-  const shuffleBtnWrapper = document.createElement("div");
-  shuffleBtnWrapper.className = "shuffleBtn-wrapper";
   const shuffleBtn = document.createElement("button");
-  shuffleBtn.textContent = "Shuffle (5 left)";
+  shuffleBtn.textContent = "Shuffle";
+  shuffleBtn.append(document.createElement("br"));
+  const shuffleUses = document.createElement("span");
+  shuffleUses.textContent = `${shuffleUse} left`;
+  shuffleBtn.append(shuffleUses);
+  buttonsWrapper.append(shuffleBtn);
   shuffleBtn.addEventListener("click", () => {
     if (shuffleUse > 0) {
       shuffleMatrix();
       renderGridItems();
       shuffleUse -= 1;
-      shuffleBtn.textContent = `Shuffle (${shuffleUse} left)`;
+      shuffleUses.textContent = `${shuffleUse} left`;
     }
   });
-  shuffleBtnWrapper.append(shuffleBtn);
-  controls.append(shuffleBtnWrapper);
   
   // Eraser Button
-  const eraserBtnWrapper = document.createElement("div");
-  eraserBtnWrapper.className = "eraserBtn-wrapper";
   const eraserBtn = document.createElement("button");
-  eraserBtn.textContent = "Erase (5 left)";
+  eraserBtn.textContent = "Erase";
+  eraserBtn.append(document.createElement("br"));
+  const eraserUses = document.createElement("span");
+  eraserUses.textContent = `${eraserUse} left`;
+  eraserBtn.append(eraserUses);
+  buttonsWrapper.append(eraserBtn);
   eraserBtn.addEventListener("click", () => {
     if (eraserUse > 0) {
       eraseNumber();
       renderGridItems();
       eraserUse -= 1;
-      eraserBtn.textContent = `Eraser (${eraserUse} left)`;
+      eraserUses.textContent = `${eraserUse} left`;
     }
   });
-  eraserBtnWrapper.append(eraserBtn);
-  controls.append(eraserBtnWrapper);
   
   // Hint Button
-  const hintBtnWrapper = document.createElement("div");
-  hintBtnWrapper.className = "hintBtn-wrapper";
   const hintBtn = document.createElement("button");
-  hintBtn.textContent = "hint (5 left)";
+  hintBtn.textContent = "Hints";
+  hintBtn.append(document.createElement("br"));
+  const hintsUses = document.createElement("span");
+  hintsUses.textContent = `${hintUse} left`;
+  hintBtn.append(hintsUses);
+  buttonsWrapper.append(hintBtn);
   hintBtn.addEventListener("click", () => {
     if (hintUse > 0) {
       let winingPairs = countWinningPairs();
       if (winingPairs > 5) winingPairs = "5+";
       hintUse -= 1;
-      hintBtn.textContent = `Hint (${hintUse} left)`;
+      hintsUses.textContent = `${hintUse} left`;
       alert(`Current number of winning pairs is ${winingPairs}`);
     }
   });
-  hintBtnWrapper.append(hintBtn);
-  controls.append(hintBtnWrapper);
 
 
+  // Timer, Score, Modes
+  const scoreWrapper = document.createElement("div");
+  const timer = document.createElement("div");
+  timer.textContent = "Timer";
+  const score = document.createElement("div");
+  score.className = "score";
+  score.textContent = `Score: ${gameScore === null ? 0 : gameScore} of 100`;
+  
+  scoreWrapper.append(timer, score);
+  controls.append(scoreWrapper);
 
-  // add grid elements
+
+  // MAIN GRID FIELD SECTION
   renderGridItems();
 
   grid.addEventListener("click", (e) => {
@@ -722,5 +752,22 @@ function countWinningPairs(matrix = mainMatrix) {
   return count;
 }
 
-// Использование
-console.log("Количество выигрышных пар:", countWinningPairs());
+
+function saveGameState() {
+  const state = {
+    mainMatrix,
+    gameScore,
+    shuffleUse,
+    eraserUse,
+    addNumber,
+    hintUse,
+    gameMode,
+  }
+
+  localStorage.setItem("gameState", JSON.stringify(state));
+  console.log(localStorage.getItem("gameState"));
+}
+
+function hasSavedGame() {
+  return localStorage.getItem("gameState") !== null;
+}
