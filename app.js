@@ -13,6 +13,13 @@ let mainMatrix = null;
 
 let previousState = null;
 
+let stopWatchInstance;
+
+const uiSettings = {
+  sound: true,
+  night: false,
+}
+
 generateMatrix()
 function generateMatrix(arr = sourceArr, gMode) {
   gameMode = gMode;
@@ -129,6 +136,7 @@ function generateUI() {
         renderGridItems();
         selectedMode.textContent = `Mode: ${gameMode[0].toUpperCase() + gameMode.slice(1)}`
         startScreen.style.display = "none";
+        stopWatchInstance.start();
       }
     }
 
@@ -139,6 +147,17 @@ function generateUI() {
         startBtn.classList.remove("shake");
       }, { once: true });
     }
+  })
+
+  const loadPreviousGameBtn = document.createElement("button");
+  loadPreviousGameBtn.className = "load-prev-game-btn";
+  loadPreviousGameBtn.id = "LoadGameBtn";
+  loadPreviousGameBtn.textContent = "Load Previous Game";
+  modalContent.append(loadPreviousGameBtn);
+  if (hasSavedGame()) loadPreviousGameBtn.style.display = "block";
+  loadPreviousGameBtn.addEventListener("click", () => {
+    loadGameState();
+    startScreen.style.display = "none";
   })
 
   // ==================================================
@@ -183,6 +202,13 @@ function generateUI() {
   const soundCheckbox = document.createElement("input");
   soundCheckbox.setAttribute("type", "checkbox");
   soundToggle.append(soundCheckbox);
+
+  const savedSetting = localStorage.getItem("soundSetting");
+  soundCheckbox.checked = savedSetting !== null ? savedSetting === "true" : true;
+  soundCheckbox.addEventListener("change", (e) => {
+    localStorage.setItem("soundSetting", e.target.checked);
+  })
+
   const soundSlider = document.createElement("span");
   soundSlider.className = "sound-slider";
   soundToggle.append(soundSlider);
@@ -211,18 +237,19 @@ function generateUI() {
   continueBtn.textContent = "Contnue";
   continueBtn.dataset.type = "continue";
   continueBtn.id = "continueBtn";
+  continueBtn.addEventListener("click", loadGameState);
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "Save";
   saveBtn.dataset.type = "save";
+  saveBtn.addEventListener("click", saveGameState);
   const resetBtn = document.createElement("button");
   resetBtn.textContent = "Reset";
   resetBtn.dataset.type = "reset";
+  resetBtn.addEventListener("click", resetGame);
 
   btnsBlock.append(continueBtn, saveBtn, resetBtn);
 
-  settingsWrapper.addEventListener("click", (e) => {
-    return;
-  })
+  if (hasSavedGame()) continueBtn.style.display = "block";
 
   // MAIN SECTION
   const main = document.createElement("main");
@@ -387,7 +414,7 @@ function generateUI() {
     handleSelection(cell); 
   });
 
-  stopWatch(timer).start();
+  stopWatchInstance = stopWatch(timer);  
 }
 
 function renderGridItems(arr = mainMatrix) {
@@ -770,6 +797,10 @@ async function preloadSounds() {
 }
 preloadSounds();
 
+const masterGain = audioCtx.createGain();
+masterGain.gain.value = 1;
+masterGain.connect(audioCtx.destination);
+
 function playSound(key, volume = 1) {
   if (!soundBuffers[key]) return;
 
@@ -780,26 +811,31 @@ function playSound(key, volume = 1) {
   gainNode.gain.value = volume;
 
   source.connect(gainNode);
-  gainNode.connect(audioCtx.destination);
+  gainNode.connect(masterGain);
 
   source.start();
+}
+
+function setMasterVolume(value) {
+  masterGain.gain.value = value;
 }
 
 
 function stopWatch(el) {
   let startTime = Date.now();
   let timerId;
+  let elapsedBeforePause = 0;
 
   function update() {
-    const elapsed = Date.now() - startTime;
+    const elapsed = elapsedBeforePause + (Date.now() - startTime);
     const seconds = Math.floor(elapsed / 1000) % 60;
     const minutes = Math.floor(elapsed / 60000);
+
     el.textContent = `Timer: ${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     
     timerId = requestAnimationFrame(update);
   }
 
-  // Методы для управления секундомером
   return {
     start() {
       startTime = Date.now();
@@ -807,12 +843,21 @@ function stopWatch(el) {
       update();
     },
     stop() {
+      elapsedBeforePause += Date.now() - startTime;
       cancelAnimationFrame(timerId);
     },
     reset() {
       cancelAnimationFrame(timerId);
       startTime = Date.now();
+      elapsedBeforePause = 0;
       el.textContent = "Timer: 00:00";
+    },
+    getElapsed() {
+      return elapsedBeforePause + (Date.now() - startTime);
+    },
+    setElapsed(ms) {
+      elapsedBeforePause = ms;
+      startTime = Date.now();
     }
   };
 }
@@ -842,26 +887,6 @@ function countWinningPairs(matrix = mainMatrix) {
   }
 
   return count;
-}
-
-
-function saveGameState() {
-  const state = {
-    mainMatrix,
-    gameScore,
-    shuffleUse,
-    eraserUse,
-    addNumber,
-    hintUse,
-    gameMode,
-  }
-
-  localStorage.setItem("gameState", JSON.stringify(state));
-  console.log(localStorage.getItem("gameState"));
-}
-
-function hasSavedGame() {
-  return localStorage.getItem("gameState") !== null;
 }
 
 function savePreviousState() {
@@ -915,4 +940,94 @@ function updateControlsUI() {
   shuffleBtn.textContent = `${shuffleUse} left`;
   eraserBtn.textContent = `${eraserUse} left`;
   hintBtn.textContent = `${hintUse} left`;
+  revertBtn.disabled = true;
+}
+
+
+function saveGameState() {
+  const elapsed = stopWatchInstance.getElapsed();
+  console.log(elapsed);
+
+  const state = {
+    mainMatrix,
+    gameScore,
+    shuffleUse,
+    eraserUse,
+    addNumber,
+    hintUse,
+    gameMode,
+    timer: elapsed,
+    previousState,
+  }
+
+  localStorage.setItem("PairEmUpGameState", JSON.stringify(state));
+  console.log(localStorage.getItem("PairEmUpGameState"));
+
+  const saveBtn = document.querySelector("button[data-type='continue']");
+  saveBtn.style.display = "block"
+}
+
+function hasSavedGame() {
+  return localStorage.getItem("PairEmUpGameState") !== null;
+}
+
+function loadGameState() {
+  const state = JSON.parse(localStorage.getItem("PairEmUpGameState"));
+  if (!state) return;
+
+  console.log(state);
+
+  mainMatrix = state.mainMatrix.map(row => row.map(v => v === null ? undefined : v));
+  gameScore = state.gameScore;
+
+  shuffleUse = state.shuffleUse;
+  eraserUse = state.eraserUse;
+  addNumber = state.addNumber;
+  hintUse = state.hintUse;
+
+  gameMode = state.gameMode;
+
+  if (state.previousState) {
+    previousState = {
+      mainMatrix: state.previousState.mainMatrix.map((row) =>
+        row.map((v) => (v === null ? undefined : v))
+      ),
+      gameScore: state.previousState.gameScore,
+      addNumber: state.previousState.addNumber,
+      shuffleUse: state.previousState.shuffleUse,
+      eraserUse: state.previousState.eraserUse,
+      hintUse: state.previousState.hintUse,
+    };
+  } else {
+    previousState = null;
+  }
+
+  stopWatchInstance.setElapsed(state.timer);
+  stopWatchInstance.start();
+
+  renderGridItems();
+  updateControlsUI();
+  updateScoreUI();
+  const continueBtn = document.querySelector("button[data-type='continue']");
+  continueBtn.style.display = "none";
+
+  localStorage.removeItem("PairEmUpGameState");
+}
+
+function resetGame() {
+  gameScore = 0;
+  shuffleUse = 5;
+  eraserUse = 5;
+  addNumber = 10;
+  hintUse = 5;
+  previousState = null;
+
+  generateMatrix(sourceArr, gameMode);
+  renderGridItems();
+  updateScoreUI();
+  updateControlsUI();
+}
+
+function saveUISettings() {
+  localStorage;
 }
