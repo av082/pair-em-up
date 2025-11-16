@@ -54,6 +54,7 @@ function printMatrix() {
   }
 }
 
+// GENERATE UI ELEMENTS
 generateUI();
 function generateUI() {
   const startScreen = document.createElement("div");
@@ -137,8 +138,9 @@ function generateUI() {
     }
   })
 
-
+  // ==================================================
   // GAME FIELD
+  // ==================================================
   const scriptEl = document.querySelector("script");
   const gameContainer = document.createElement("div");
   gameContainer.className = "container";
@@ -169,6 +171,34 @@ function generateUI() {
   toolsBlock.className = "settingsBlock";
   settingsWrapper.append(toolsBlock);
 
+  const soundIconWrapper = document.createElement("div")
+  soundIconWrapper.className = "sound-icon-wrapper";
+  toolsBlock.append(soundIconWrapper);
+  
+  const soundToggle = document.createElement("label");
+  soundToggle.className = "sound-switch";
+  const soundCheckbox = document.createElement("input");
+  soundCheckbox.setAttribute("type", "checkbox");
+  soundToggle.append(soundCheckbox);
+  const soundSlider = document.createElement("span");
+  soundSlider.className = "sound-slider";
+  soundToggle.append(soundSlider);
+  toolsBlock.append(soundToggle);
+  
+  const themeIconWrapper = document.createElement("div")
+  themeIconWrapper.className = "theme-icon-wrapper";
+  toolsBlock.append(themeIconWrapper);
+  
+  const themeToggle = document.createElement("label");
+  themeToggle.className = "theme-switch";
+  const themeCheckbox = document.createElement("input");
+  themeCheckbox.setAttribute("type", "checkbox");
+  themeToggle.append(themeCheckbox);
+  const themeSlider = document.createElement("span");
+  themeSlider.className = "theme-slider";
+  themeToggle.append(themeSlider);
+  toolsBlock.append(themeToggle);
+
 
   const btnsBlock = document.createElement("div");
   btnsBlock.className = "btnsBlock";
@@ -177,6 +207,7 @@ function generateUI() {
   const continueBtn = document.createElement("button");
   continueBtn.textContent = "Contnue";
   continueBtn.dataset.type = "continue";
+  continueBtn.id = "continueBtn";
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "Save";
   saveBtn.dataset.type = "save";
@@ -296,7 +327,11 @@ function generateUI() {
   let observer = new MutationObserver(el => {
     const parentWidth = progressContainer.offsetWidth;
     const barLength = Math.round(parentWidth / 100 * gameScore);
-    progressContainer.style.setProperty("--bar-width", `${barLength}px`);
+    if (barLength <= parentWidth) {
+      progressContainer.style.setProperty("--bar-width", `${barLength}px`);
+    } else {
+      progressContainer.style.setProperty("--bar-width", `${parentWidth}px`);
+    }
   });
   observer.observe(score, {
     childList: true,

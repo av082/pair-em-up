@@ -195,13 +195,22 @@ input[type='radio']:checked + span {
 .settingsWrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .btnsBlock {
   display: flex;
   flex-direction: row;
   gap: 10px;
+}
+
+.btnsBlock button {
+  color: #4386ed;
+  border: 1px solid #4386ed;
+  border-radius: 10px;
+  padding: 2px 7px;
+  background-color: #fff;
 }
 
 button {
@@ -239,7 +248,7 @@ main {
 
 .buttonsWrapper span {
   font-size: 12px;
-  color: #878787;
+  color: rgba(67, 135, 237, 0.696);
 }
 
 .play-field {
@@ -319,7 +328,6 @@ main {
   border-radius: 5px;
 }
 
-
 .progress-container.fixed {
   margin: 0;
   position: fixed;
@@ -329,3 +337,92 @@ main {
   width: 100%;
 }
 
+.settingsBlock {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+}
+
+.sound-switch,
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.sound-switch input,
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.sound-slider,
+.theme-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 34px;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.sound-slider::before,
+.theme-slider::before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  border-radius: 50%;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .sound-slider,
+input:checked + .theme-slider {
+  background-color: #2196F3;
+}
+
+input:focus + .sound-slider,
+input:focus + .theme-slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .sound-slider:before,
+input:checked + .theme-slider:before {
+  -webkit-transform: translateX(16px);
+  -ms-transform: translateX(16px);
+  transform: translateX(16px);
+}
+
+.sound-icon-wrapper,
+.theme-icon-wrapper {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  max-height: 20px;
+  max-width: 20px;
+  padding-right: 5px;
+}
+
+.sound-icon-wrapper {
+  background-color: #2196F3; /* цвет иконки */
+  -webkit-mask: url('/img/sound.svg') no-repeat center / contain;
+  mask: url('/img/sound.svg') no-repeat center / contain;
+}
+
+.theme-icon-wrapper {
+  margin-left: 10px;
+  background-color: #2196F3; /* цвет иконки */
+  -webkit-mask: url('/img/theme.svg') no-repeat center / contain;
+  mask: url('/img/theme.svg') no-repeat center / contain;
+}
