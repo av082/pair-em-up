@@ -10,6 +10,9 @@ let addNumber = 10;
 let hintUse = 5;
 
 let mainMatrix = null;
+
+let previousState = null;
+
 generateMatrix()
 function generateMatrix(arr = sourceArr, gMode) {
   gameMode = gMode;
@@ -240,15 +243,17 @@ function generateUI() {
   const appendBtn = document.createElement("button");
   appendBtn.textContent = "Add nums";
   appendBtn.append(document.createElement("br"));
-  const appentUses = document.createElement("span");
-  appentUses.textContent = `${addNumber} left`;
-  appendBtn.append(appentUses);
+  const appendUses = document.createElement("span");
+  appendUses.id = "addBtn";
+  appendUses.textContent = `${addNumber} left`;
+  appendBtn.append(appendUses);
   buttonsWrapper.append(appendBtn);
   appendBtn.addEventListener("click", () => {
     if (addNumber > 0) {
+      savePreviousState();
       appendNumbers();
       addNumber -= 1;
-      appentUses.textContent = `${addNumber} left`;
+      appendUses.textContent = `${addNumber} left`;
     }
   });
 
@@ -257,11 +262,13 @@ function generateUI() {
   shuffleBtn.textContent = "Shuffle";
   shuffleBtn.append(document.createElement("br"));
   const shuffleUses = document.createElement("span");
+  shuffleUses.id = "shuffleBtn";
   shuffleUses.textContent = `${shuffleUse} left`;
   shuffleBtn.append(shuffleUses);
   buttonsWrapper.append(shuffleBtn);
   shuffleBtn.addEventListener("click", () => {
     if (shuffleUse > 0) {
+      savePreviousState();
       shuffleMatrix();
       renderGridItems();
       shuffleUse -= 1;
@@ -274,11 +281,13 @@ function generateUI() {
   eraserBtn.textContent = "Erase";
   eraserBtn.append(document.createElement("br"));
   const eraserUses = document.createElement("span");
+  eraserUses.id = "eraserBtn";
   eraserUses.textContent = `${eraserUse} left`;
   eraserBtn.append(eraserUses);
   buttonsWrapper.append(eraserBtn);
   eraserBtn.addEventListener("click", () => {
     if (eraserUse > 0) {
+      savePreviousState();
       eraseNumber();
       renderGridItems();
       eraserUse -= 1;
@@ -291,11 +300,13 @@ function generateUI() {
   hintBtn.textContent = "Hints";
   hintBtn.append(document.createElement("br"));
   const hintsUses = document.createElement("span");
+  hintsUses.id = "hintBtn";
   hintsUses.textContent = `${hintUse} left`;
   hintBtn.append(hintsUses);
   buttonsWrapper.append(hintBtn);
   hintBtn.addEventListener("click", () => {
     if (hintUse > 0) {
+      savePreviousState();
       let winingPairs = countWinningPairs();
       if (winingPairs > 5) winingPairs = "5+";
       hintUse -= 1;
@@ -303,6 +314,17 @@ function generateUI() {
       alert(`Current number of winning pairs is ${winingPairs}`);
     }
   });
+  
+  // Revert Button
+  const revertBtn = document.createElement("button");
+  revertBtn.className = "revert-btn";
+  revertBtn.id = "revertBtn";
+  revertBtn.disabled = true;
+  const revertIcon = document.createElement("span");
+  revertIcon.className = "revert-icon";
+  revertBtn.append(revertIcon);
+  buttonsWrapper.append(revertBtn);
+  revertBtn.addEventListener("click", restorePreviousState);
 
 
   // Timer, Score, Modes
@@ -434,6 +456,7 @@ function handleSelection(cell) {
       el2.classList.add("selected");
       
       if (isMatch(value1, value2)) {
+        savePreviousState();
 
         updateScore(value1, value2);
 
@@ -839,4 +862,57 @@ function saveGameState() {
 
 function hasSavedGame() {
   return localStorage.getItem("gameState") !== null;
+}
+
+function savePreviousState() {
+  previousState = {
+    mainMatrix: mainMatrix.map(row => [...row]),
+    gameScore,
+    addNumber,
+    shuffleUse,
+    eraserUse,
+    hintUse
+  };
+
+  activateUndoButton();
+}
+
+function restorePreviousState() {
+  if (!previousState) return;
+
+  mainMatrix = previousState.mainMatrix.map(row => [...row]);
+  gameScore = previousState.gameScore;
+  addNumber = previousState.addNumber;
+  shuffleUse = previousState.shuffleUse;
+  eraserUse = previousState.eraserUse;
+  hintUse = previousState.hintUse;
+
+  previousState = null;
+
+  deactivateUndoButton();
+  renderGridItems();
+  updateScoreUI();
+  updateControlsUI();
+}
+
+function activateUndoButton() {
+  const btn = document.getElementById("revertBtn");
+  if (btn) btn.disabled = false;
+}
+
+function deactivateUndoButton() {
+  const btn = document.getElementById("revertBtn");
+  if (btn) btn.disabled = true;
+}
+
+function updateScoreUI() {
+  const score = document.querySelector(".scoreWrapper .score");
+  score.textContent = `Score: ${gameScore} of 100`;
+}
+
+function updateControlsUI() {
+  addBtn.textContent = `${addNumber} left`;
+  shuffleBtn.textContent = `${shuffleUse} left`;
+  eraserBtn.textContent = `${eraserUse} left`;
+  hintBtn.textContent = `${hintUse} left`;
 }

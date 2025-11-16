@@ -251,6 +251,32 @@ main {
   color: rgba(67, 135, 237, 0.696);
 }
 
+.buttonsWrapper .revert-btn {
+  width: 53px;
+  padding: 0;
+}
+
+.buttonsWrapper .revert-btn:disabled {
+  border-color: #a4a4a4;
+}
+
+.buttonsWrapper .revert-btn:disabled:hover {
+  background-color: unset;
+}
+
+.buttonsWrapper .revert-btn:disabled .revert-icon {
+  background-color: #a4a4a4;
+}
+
+.buttonsWrapper .revert-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #2196F3;
+  -webkit-mask: url('/img/revert.svg') no-repeat center / contain;
+  mask: url('/img/revert.svg') no-repeat center / contain;
+}
+
 .play-field {
   display: grid;
   grid-template-columns: repeat(9, auto);
