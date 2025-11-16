@@ -1026,6 +1026,8 @@ function resetGame() {
   renderGridItems();
   updateScoreUI();
   updateControlsUI();
+  stopWatchInstance.reset();
+  stopWatchInstance.start()
 }
 
 function saveUISettings() {
