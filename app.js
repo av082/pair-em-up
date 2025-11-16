@@ -203,12 +203,6 @@ function generateUI() {
   soundCheckbox.setAttribute("type", "checkbox");
   soundToggle.append(soundCheckbox);
 
-  const savedSetting = localStorage.getItem("soundSetting");
-  soundCheckbox.checked = savedSetting !== null ? savedSetting === "true" : true;
-  soundCheckbox.addEventListener("change", (e) => {
-    localStorage.setItem("soundSetting", e.target.checked);
-  })
-
   const soundSlider = document.createElement("span");
   soundSlider.className = "sound-slider";
   soundToggle.append(soundSlider);
@@ -816,9 +810,25 @@ function playSound(key, volume = 1) {
   source.start();
 }
 
-function setMasterVolume(value) {
-  masterGain.gain.value = value;
+function setMasterVolume(val) {
+  const soundBtn = document.querySelector(".sound-switch input");
+  const savedSetting = localStorage.getItem("soundSetting");
+
+  if (val === undefined) {
+    const isOn = savedSetting !== null ? savedSetting === "true" : true;
+    soundBtn.checked = isOn;
+    masterGain.gain.value = isOn ? 1 : 0;
+  } else {
+    masterGain.gain.value = val ? 1 : 0;
+    localStorage.setItem("soundSetting", val);
+  }
 }
+const soundCheckbox = document.querySelector(".sound-switch input");
+setMasterVolume();
+
+soundCheckbox.addEventListener("change", (e) => {
+  setMasterVolume(e.target.checked);
+});
 
 
 function stopWatch(el) {
@@ -946,7 +956,6 @@ function updateControlsUI() {
 
 function saveGameState() {
   const elapsed = stopWatchInstance.getElapsed();
-  console.log(elapsed);
 
   const state = {
     mainMatrix,
@@ -961,7 +970,6 @@ function saveGameState() {
   }
 
   localStorage.setItem("PairEmUpGameState", JSON.stringify(state));
-  console.log(localStorage.getItem("PairEmUpGameState"));
 
   const saveBtn = document.querySelector("button[data-type='continue']");
   saveBtn.style.display = "block"
