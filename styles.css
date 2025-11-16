@@ -213,10 +213,6 @@ main {
   flex-direction: column;
 }
 
-.controls {
-  padding-bottom: 5px;
-}
-
 .buttonsWrapper {
   display: flex;
   flex-direction: row;
@@ -283,17 +279,53 @@ main {
 
 .play-item.error {
   border: 2px solid #f94040;
+  background-color: rgba(249, 64, 64, 0.2) !important;
 }
 
 .controls {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: flex-end;
 }
 
-.mode {
-  border: 1px solid #ccc;
+.progressWrapper {
+  position: relative;
+  flex-basis: 100%;
 }
-.mode p {
+
+.progress-container {
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 10px;
+  padding-top: 5px;
+  margin-top: 7px;
+  margin-bottom: 3px;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+.progress-container::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 0;
+  height: 5px;
+  width: var(--bar-width);
+  background-color: #079a07;
+  border-radius: 5px;
+}
+
+
+.progress-container.fixed {
   margin: 0;
+  position: fixed;
+  top: 0;
+  background-color: #fff;
+  height: 20px;
+  width: 100%;
 }
+

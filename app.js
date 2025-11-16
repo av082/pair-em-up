@@ -276,15 +276,49 @@ function generateUI() {
 
   // Timer, Score, Modes
   const scoreWrapper = document.createElement("div");
+  scoreWrapper.className = "scoreWrapper";
   const timer = document.createElement("div");
   timer.textContent = "Timer";
   const score = document.createElement("div");
   score.className = "score";
   score.textContent = `Score: ${gameScore === null ? 0 : gameScore} of 100`;
+  const progressContainer = document.createElement("div");
+  progressContainer.className = "progress-container";
+
+  const progressWrapper = document.createElement("div");
+  progressWrapper.className = "progressWrapper";
+  progressWrapper.append(progressContainer);
+
   
   scoreWrapper.append(timer, score);
-  controls.append(scoreWrapper);
+  controls.append(scoreWrapper, progressWrapper);
 
+  let observer = new MutationObserver(el => {
+    const parentWidth = progressContainer.offsetWidth;
+    const barLength = Math.round(parentWidth / 100 * gameScore);
+    progressContainer.style.setProperty("--bar-width", `${barLength}px`);
+  });
+  observer.observe(score, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+
+
+  window.onload = () => {
+    const barWidth = progressWrapper.offsetWidth;
+    const offsetTop = progressContainer.getBoundingClientRect().top + window.scrollY;
+    
+    window.addEventListener("scroll", () => {
+      if (window.scrollY >= offsetTop) {
+        progressContainer.style.width = barWidth + "px";
+        progressContainer.classList.add("fixed");
+      } else {
+        progressContainer.style.width = "";
+        progressContainer.classList.remove("fixed");
+      }
+    })
+  }
 
   // MAIN GRID FIELD SECTION
   renderGridItems();
