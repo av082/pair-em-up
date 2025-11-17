@@ -8,6 +8,8 @@ let shuffleUse = 5;
 let eraserUse = 5;
 let addNumber = 10;
 let hintUse = 5;
+let movesTotal = 0;
+const resultTime = {};
 
 let mainMatrix = null;
 
@@ -19,6 +21,8 @@ const uiSettings = {
   sound: true,
   night: false,
 }
+
+const gameLog = [];
 
 generateMatrix()
 function generateMatrix(arr = sourceArr, gMode) {
@@ -192,6 +196,13 @@ function generateUI() {
   const toolsBlock = document.createElement("div");
   toolsBlock.className = "settingsBlock";
   settingsWrapper.append(toolsBlock);
+
+  const statsIconWrapper = document.createElement("div");
+  statsIconWrapper.className = "stats-icon-wrapper";
+  toolsBlock.append(statsIconWrapper);
+  statsIconWrapper.addEventListener("click", () => {
+    envokeModalPopup("stat");
+  })
 
   const soundIconWrapper = document.createElement("div")
   soundIconWrapper.className = "sound-icon-wrapper";
@@ -610,6 +621,7 @@ function canSelect(r1, c1, r2, c2) {
 
 function hasWon() {
   if (gameScore >=100) {
+    gameStats = 
     envokeModalPopup("win");
     return true;
   }
@@ -655,6 +667,8 @@ function updateScore(value1, value2) {
   }
 
   if (gameScore > 100) gameScore = 100;
+
+  movesTotal += 1;
 
   scoreEl.textContent = `Score: ${gameScore} of 100`;
 }
@@ -1046,159 +1060,248 @@ function resetGame() {
 
 
 // MODAL POPUP
-  // ===========================================================
-  function envokeModalPopup(condition) {
-    const background = document.createElement("div");
-    background.id = "modalBackground";
-    const modalContainer = document.createElement("div");
-    modalContainer.id = "modalContainer";
-    document.body.prepend(background);
-    document.body.prepend(modalContainer);
+// ===========================================================
+function envokeModalPopup(condition) {
+  const background = document.createElement("div");
+  background.id = "modalBackground";
+  const modalContainer = document.createElement("div");
+  modalContainer.id = "modalContainer";
+  document.body.prepend(background);
+  document.body.prepend(modalContainer);
 
-    if (condition === "win") {
-      renderWinModal();
-      playSound("win");
+  if (condition === "win") {
+    setResultTime();
+    saveGameResults("won");
+    renderWinModal();
+    playSound("win");
+  }
+  else if (condition === "lose") {
+    setResultTime();
+    saveGameResults("lost");
+    renderLoseModal();
+    playSound("lose");
+  }
+  else if (condition === "stat") {
+    renderResultsModal();
+  }
+  else if (condition === "hint") {
+    renderHintModal();
+  }
+}
+
+function renderWinModal() {
+  const h1 = document.createElement("h1");
+  h1.textContent = "Congratulations! 🎉";
+  modalContainer.append(h1);
+
+  const h2 = document.createElement("h2");
+  h2.textContent = "Your result"
+  
+  const p1 = document.createElement("p");
+  const span1 = document.createElement("span");
+  p1.textContent = "You scored: ";
+  span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
+  p1.append(span1);
+  
+  const p2 = document.createElement("p");
+  const span2 = document.createElement("span");
+  p2.textContent = "And spent ";
+  span2.textContent = `${resultTime.time} minutes.`;
+  p2.append(span2);
+
+  modalContainer.append(h2, p1, p2);
+
+  document.body.style.overflow = "hidden";
+
+  const newGame = document.createElement("button");
+  newGame.textContent = "New Game";
+  newGame.className = "new-game-btn";
+  const restartGame = document.createElement("button");
+  restartGame.textContent = "Restart Game";
+  restartGame.className = "restart-game-btn";
+
+  modalContainer.append(newGame, restartGame);
+
+  restartGame.addEventListener("click", () => {
+    resetGame();
+    hideModalPopup();
+  })
+
+  newGame.addEventListener("click", () => {
+    window.location.reload();
+  });
+}
+
+function renderLoseModal() {
+  const h1 = document.createElement("h1");
+  h1.textContent = "You lost! 😢";
+  modalContainer.append(h1);
+
+  const h2 = document.createElement("h2");
+  h2.textContent = "Your result"
+  
+  const p1 = document.createElement("p");
+  const span1 = document.createElement("span");
+  p1.textContent = "You scored: ";
+  span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
+  p1.append(span1);
+  
+  const p2 = document.createElement("p");
+  const span2 = document.createElement("span");
+  p2.textContent = "And spent ";
+  
+  span2.textContent = `${resultTime.time} minutes.`;
+  p2.append(span2);
+
+  modalContainer.append(h2, p1, p2);
+
+  document.body.style.overflow = "hidden";
+
+  const newGame = document.createElement("button");
+  newGame.textContent = "New Game";
+  newGame.className = "new-game-btn";
+  const restartGame = document.createElement("button");
+  restartGame.textContent = "Restart Game";
+  restartGame.className = "restart-game-btn";
+
+  modalContainer.append(newGame, restartGame);
+
+  restartGame.addEventListener("click", () => {
+    resetGame();
+    hideModalPopup();
+  })
+
+  newGame.addEventListener("click", () => {
+    window.location.reload();
+  });
+}
+
+function renderHintModal() {
+  const movesCount = countWinningPairs();
+  const availableMoves = movesCount > 5 ? "5+" : movesCount;
+
+  const h1 = document.createElement("h1");
+  h1.textContent = "⭐️ Hint ⭐️";
+  modalContainer.append(h1);
+
+  const h2 = document.createElement("h2");
+  h2.className = "hint-h2";
+  h2.textContent = `You have ${availableMoves} moves available.`
+  modalContainer.append(h2);
+
+  document.body.style.overflow = "hidden";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "Close ⛌";
+  closeBtn.className = "restart-game-btn";
+
+  modalContainer.append(closeBtn);
+
+  closeBtn.addEventListener("click", () => {
+    hideModalPopup();
+  });
+}
+
+function renderResultsModal() {
+  const h1 = document.createElement("h1");
+  h1.textContent = "Game Statistics";
+  modalContainer.append(h1);
+
+  const container = document.createElement("div");
+  container.className = "grid-container";
+  modalContainer.append(container);
+
+  const columns = ["Mode", "Score", "Outcome", "Time", "Moves"];
+  for (let col of columns) {
+    const p = document.createElement("p");
+    p.className = "stat-header";
+    p.textContent = col;
+    container.append(p);
+  }
+
+  const gameResults = getGameResults();
+  gameResults.sort((a, b) => b.time.elapsed - a.time.elapsed);
+
+  gameResults.forEach((object => {
+    for (const key in object) {
+      const p = document.createElement("p");
+
+      if (
+        typeof object[key] === "object" &&
+        object[key] !== null &&
+        "time" in object
+      ) {
+        p.textContent = `${object[key].time}`;
+      } else {
+        p.textContent = `${
+          typeof object[key] === "string"
+            ? object[key][0].toUpperCase().slice(0) + object[key].slice(1)
+            : object[key]
+        }`;
+      }
+
+      container.append(p);
     }
-    else if (condition === "lose") {
-      renderLoseModal();
-      playSound("lose");
-    }
-    else if (condition === "stat") {
-      renderStatModal();
-    }
-    else if (condition === "hint") {
-      renderHintModal();
-    }
+  }))
+
+  document.body.style.overflow = "hidden";
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "Close ⛌";
+  closeBtn.className = "restart-game-btn";
+
+  modalContainer.append(closeBtn);
+
+  closeBtn.addEventListener("click", () => {
+    hideModalPopup();
+  });
+}
+
+function hideModalPopup() {
+  modalContainer.style.dysplay = "none"
+  modalBackground.style.display = "none";
+  modalContainer.remove();
+  modalBackground.remove();
+  document.body.style.overflow = "";
+}
+// ===========================================================
+
+function setResultTime() {
+  const elapsed = stopWatchInstance.stop();
+  const seconds = Math.floor(elapsed / 1000) % 60;
+  const minutes = Math.floor(elapsed / 60000);
+  
+  resultTime.elapsed = elapsed;
+  resultTime.time = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
+function getResults() {
+  const results = [];
+  gameLog.map((game) => {
+    console.log(`| Mode: ${game.selectedMode} | Score: ${game.finalScore} | Outcome: ${game.outcome} | Time: ${game.time} | Moves: ${game.movesTotal} |`)
+
+  })
+}
+
+function saveGameResults(outcome) {
+  const data = {
+    selectedMode: gameMode,
+    finalScore: gameScore,
+    outcome: outcome,
+    time: resultTime,
+    movesTotal: movesTotal,
   }
 
-  function renderWinModal() {
-    const h1 = document.createElement("h1");
-    h1.textContent = "Congratulations! 🎉";
-    modalContainer.append(h1);
+  const key = "PairEmGameStats";
 
-    const h2 = document.createElement("h2");
-    h2.textContent = "Your result"
-    
-    const p1 = document.createElement("p");
-    const span1 = document.createElement("span");
-    p1.textContent = "You scored: ";
-    span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
-    p1.append(span1);
-    
-    const p2 = document.createElement("p");
-    const span2 = document.createElement("span");
-    p2.textContent = "And spent ";
-    
-    const elapsed = stopWatchInstance.stop();
-    const seconds = Math.floor(elapsed / 1000) % 60;
-    const minutes = Math.floor(elapsed / 60000);
-    
-    span2.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")} minutes.`;
-    p2.append(span2);
+  let resultsOld = JSON.parse(localStorage.getItem(key)) || [];
 
-    modalContainer.append(h2, p1, p2);
+  resultsOld.unshift(data);
+  resultsOld = resultsOld.slice(0, 5);
 
-    document.body.style.overflow = "hidden";
+  localStorage.setItem(key, JSON.stringify(resultsOld));
+}
 
-    const newGame = document.createElement("button");
-    newGame.textContent = "New Game";
-    newGame.className = "new-game-btn";
-    const restartGame = document.createElement("button");
-    restartGame.textContent = "Restart Game";
-    restartGame.className = "restart-game-btn";
-
-    modalContainer.append(newGame, restartGame);
-
-    restartGame.addEventListener("click", () => {
-      resetGame();
-      hideModalPopup();
-    })
-
-    newGame.addEventListener("click", () => {
-      window.location.reload();
-    });
-  }
-
-  function renderLoseModal() {
-    const h1 = document.createElement("h1");
-    h1.textContent = "You lost! 😢";
-    modalContainer.append(h1);
-
-    const h2 = document.createElement("h2");
-    h2.textContent = "Your result"
-    
-    const p1 = document.createElement("p");
-    const span1 = document.createElement("span");
-    p1.textContent = "You scored: ";
-    span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
-    p1.append(span1);
-    
-    const p2 = document.createElement("p");
-    const span2 = document.createElement("span");
-    p2.textContent = "And spent ";
-    
-    const elapsed = stopWatchInstance.stop();
-    const seconds = Math.floor(elapsed / 1000) % 60;
-    const minutes = Math.floor(elapsed / 60000);
-    
-    span2.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")} minutes.`;
-    p2.append(span2);
-
-    modalContainer.append(h2, p1, p2);
-
-    document.body.style.overflow = "hidden";
-
-    const newGame = document.createElement("button");
-    newGame.textContent = "New Game";
-    newGame.className = "new-game-btn";
-    const restartGame = document.createElement("button");
-    restartGame.textContent = "Restart Game";
-    restartGame.className = "restart-game-btn";
-
-    modalContainer.append(newGame, restartGame);
-
-    restartGame.addEventListener("click", () => {
-      resetGame();
-      hideModalPopup();
-    })
-
-    newGame.addEventListener("click", () => {
-      window.location.reload();
-    });
-  }
-
-  function renderHintModal() {
-    const movesCount = countWinningPairs();
-    const availableMoves = movesCount > 5 ? "5+" : movesCount;
-
-    const h1 = document.createElement("h1");
-    h1.textContent = "⭐️ Hint ⭐️";
-    modalContainer.append(h1);
-
-    const h2 = document.createElement("h2");
-    h2.className = "hint-h2";
-    h2.textContent = `You have ${availableMoves} moves available.`
-    modalContainer.append(h2);
-
-    document.body.style.overflow = "hidden";
-
-    const closeBtn = document.createElement("button");
-    closeBtn.textContent = "Close ⛌";
-    closeBtn.className = "restart-game-btn";
-
-    modalContainer.append(closeBtn);
-
-    closeBtn.addEventListener("click", () => {
-      hideModalPopup();
-    });
-  }
-
-  function hideModalPopup() {
-    modalContainer.style.dysplay = "none"
-    modalBackground.style.display = "none";
-    modalContainer.remove();
-    modalBackground.remove();
-    document.body.style.overflow = "";
-  }
-
-  // ===========================================================
+function getGameResults() {
+  return JSON.parse(localStorage.getItem("PairEmGameStats"));
+}
