@@ -857,8 +857,8 @@ function stopWatch(el) {
     },
     stop() {
       elapsedBeforePause += Date.now() - startTime;
-      return elapsedBeforePause;
       cancelAnimationFrame(timerId);
+      return elapsedBeforePause;
     },
     reset() {
       cancelAnimationFrame(timerId);
