@@ -185,7 +185,7 @@ function generateUI() {
   headerWrapper.append(titleWrapper);
 
   const h1 = document.createElement("h1");
-  h1.textContent = "Pair them Game";
+  h1.textContent = "Pair 'em Game";
   titleWrapper.prepend(h1);
 
   const selectedMode = document.createElement("p");
@@ -280,11 +280,16 @@ function generateUI() {
   controls.append(buttonsWrapper);
 
   const appendBtn = document.createElement("button");
-  appendBtn.textContent = "Add nums";
-  appendBtn.append(document.createElement("br"));
+  // appendBtn.textContent = "Add nums";
+  // appendBtn.append(document.createElement("br"));
+
+  const addIcon = document.createElement("span");
+  addIcon.classList = "add-icon";
+  appendBtn.append(addIcon);
+
   const appendUses = document.createElement("span");
   appendUses.id = "addBtn";
-  appendUses.textContent = `${addNumber} left`;
+  appendUses.textContent = `${addNumber}`;
   appendBtn.append(appendUses);
   buttonsWrapper.append(appendBtn);
   appendBtn.addEventListener("click", () => {
@@ -292,17 +297,21 @@ function generateUI() {
       savePreviousState();
       appendNumbers();
       addNumber -= 1;
-      appendUses.textContent = `${addNumber} left`;
+      appendUses.textContent = `${addNumber}`;
     }
   });
 
   // Shuffle Numbers Button
   const shuffleBtn = document.createElement("button");
-  shuffleBtn.textContent = "Shuffle";
-  shuffleBtn.append(document.createElement("br"));
+  // shuffleBtn.textContent = "Shuffle";
+  // shuffleBtn.append(document.createElement("br"));
+  const shuffleIcon = document.createElement("span");
+  shuffleIcon.classList = "shuffle-icon";
+  shuffleBtn.append(shuffleIcon);
+
   const shuffleUses = document.createElement("span");
   shuffleUses.id = "shuffleBtn";
-  shuffleUses.textContent = `${shuffleUse} left`;
+  shuffleUses.textContent = `${shuffleUse}`;
   shuffleBtn.append(shuffleUses);
   buttonsWrapper.append(shuffleBtn);
   shuffleBtn.addEventListener("click", () => {
@@ -311,17 +320,21 @@ function generateUI() {
       shuffleMatrix();
       renderGridItems();
       shuffleUse -= 1;
-      shuffleUses.textContent = `${shuffleUse} left`;
+      shuffleUses.textContent = `${shuffleUse}`;
     }
   });
   
   // Eraser Button
   const eraserBtn = document.createElement("button");
-  eraserBtn.textContent = "Erase";
-  eraserBtn.append(document.createElement("br"));
+  // eraserBtn.textContent = "Erase";
+  // eraserBtn.append(document.createElement("br"));
+  const eraseIcon = document.createElement("span");
+  eraseIcon.classList = "erase-icon";
+  eraserBtn.append(eraseIcon);
+
   const eraserUses = document.createElement("span");
   eraserUses.id = "eraserBtn";
-  eraserUses.textContent = `${eraserUse} left`;
+  eraserUses.textContent = `${eraserUse}`;
   eraserBtn.append(eraserUses);
   buttonsWrapper.append(eraserBtn);
   eraserBtn.addEventListener("click", () => {
@@ -330,17 +343,21 @@ function generateUI() {
       eraseNumber();
       renderGridItems();
       eraserUse -= 1;
-      eraserUses.textContent = `${eraserUse} left`;
+      eraserUses.textContent = `${eraserUse}`;
     }
   });
   
   // Hint Button
   const hintBtn = document.createElement("button");
-  hintBtn.textContent = "Hints";
-  hintBtn.append(document.createElement("br"));
+  // hintBtn.textContent = "Hints";
+  // hintBtn.append(document.createElement("br"));
+  const hintIcon = document.createElement("span");
+  hintIcon.classList = "hint-icon";
+  hintBtn.append(hintIcon);
+
   const hintsUses = document.createElement("span");
   hintsUses.id = "hintBtn";
-  hintsUses.textContent = `${hintUse} left`;
+  hintsUses.textContent = `${hintUse}`;
   hintBtn.append(hintsUses);
   buttonsWrapper.append(hintBtn);
   hintBtn.addEventListener("click", () => {
@@ -349,7 +366,7 @@ function generateUI() {
       let winingPairs = countWinningPairs();
       if (winingPairs > 5) winingPairs = "5+";
       hintUse -= 1;
-      hintsUses.textContent = `${hintUse} left`;
+      hintsUses.textContent = `${hintUse}`;
       envokeModalPopup("hint");
     }
   });
@@ -972,10 +989,10 @@ function updateScoreUI() {
 }
 
 function updateControlsUI() {
-  addBtn.textContent = `${addNumber} left`;
-  shuffleBtn.textContent = `${shuffleUse} left`;
-  eraserBtn.textContent = `${eraserUse} left`;
-  hintBtn.textContent = `${hintUse} left`;
+  addBtn.textContent = `${addNumber}`;
+  shuffleBtn.textContent = `${shuffleUse}`;
+  eraserBtn.textContent = `${eraserUse}`;
+  hintBtn.textContent = `${hintUse}`;
   revertBtn.disabled = true;
   selectedMode.textContent = `Mode: ${gameMode[0].toUpperCase() + gameMode.slice(1)}`;
 }
