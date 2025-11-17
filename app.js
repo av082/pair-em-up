@@ -155,12 +155,16 @@ function generateUI() {
 
   const loadPreviousGameBtn = document.createElement("button");
   loadPreviousGameBtn.className = "load-prev-game-btn";
-  loadPreviousGameBtn.id = "LoadGameBtn";
+  loadPreviousGameBtn.id = "loadGameBtn";
   loadPreviousGameBtn.textContent = "Load Previous Game";
   modalContent.append(loadPreviousGameBtn);
+  
   if (hasSavedGame()) loadPreviousGameBtn.style.display = "block";
-  loadPreviousGameBtn.addEventListener("click", () => {
+  console.log(`Игра сохранена: ${hasSavedGame()}`);
+  
+  loadGameBtn.addEventListener("click", () => {
     loadGameState();
+    console.log("Вызов из события...");
     startScreen.style.display = "none";
   })
 
@@ -243,10 +247,12 @@ function generateUI() {
   continueBtn.dataset.type = "continue";
   continueBtn.id = "continueBtn";
   continueBtn.addEventListener("click", loadGameState);
+
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "Save";
   saveBtn.dataset.type = "save";
   saveBtn.addEventListener("click", saveGameState);
+
   const resetBtn = document.createElement("button");
   resetBtn.textContent = "Reset";
   resetBtn.dataset.type = "reset";
@@ -971,6 +977,7 @@ function updateControlsUI() {
   eraserBtn.textContent = `${eraserUse} left`;
   hintBtn.textContent = `${hintUse} left`;
   revertBtn.disabled = true;
+  selectedMode.textContent = `Mode: ${gameMode[0].toUpperCase() + gameMode.slice(1)}`;
 }
 
 
@@ -1002,8 +1009,6 @@ function hasSavedGame() {
 function loadGameState() {
   const state = JSON.parse(localStorage.getItem("PairEmUpGameState"));
   if (!state) return;
-
-  console.log(state);
 
   mainMatrix = state.mainMatrix.map(row => row.map(v => v === null ? undefined : v));
   gameScore = state.gameScore;
@@ -1273,14 +1278,6 @@ function setResultTime() {
   
   resultTime.elapsed = elapsed;
   resultTime.time = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-}
-
-function getResults() {
-  const results = [];
-  gameLog.map((game) => {
-    console.log(`| Mode: ${game.selectedMode} | Score: ${game.finalScore} | Outcome: ${game.outcome} | Time: ${game.time} | Moves: ${game.movesTotal} |`)
-
-  })
 }
 
 function saveGameResults(outcome) {
