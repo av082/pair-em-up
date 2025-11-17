@@ -160,11 +160,9 @@ function generateUI() {
   modalContent.append(loadPreviousGameBtn);
   
   if (hasSavedGame()) loadPreviousGameBtn.style.display = "block";
-  console.log(`Игра сохранена: ${hasSavedGame()}`);
   
   loadGameBtn.addEventListener("click", () => {
     loadGameState();
-    console.log("Вызов из события...");
     startScreen.style.display = "none";
   })
 
