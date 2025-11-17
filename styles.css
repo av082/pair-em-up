@@ -508,6 +508,10 @@ input:checked + .theme-slider:before {
   border-bottom: 2px solid #878787;
 }
 
+#modalContainer .hint-h2 {
+  border-bottom: none;
+}
+
 #modalContainer button {
   display: block;
   margin: 0 auto;

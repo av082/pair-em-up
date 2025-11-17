@@ -333,7 +333,7 @@ function generateUI() {
       if (winingPairs > 5) winingPairs = "5+";
       hintUse -= 1;
       hintsUses.textContent = `${hintUse} left`;
-      alert(`Current number of winning pairs is ${winingPairs}`);
+      envokeModalPopup("hint");
     }
   });
   
@@ -653,6 +653,8 @@ function updateScore(value1, value2) {
   } else if (value1 === value2) {
     gameScore += 1;
   }
+
+  if (gameScore > 100) gameScore = 100;
 
   scoreEl.textContent = `Score: ${gameScore} of 100`;
 }
@@ -1064,6 +1066,9 @@ function resetGame() {
     else if (condition === "stat") {
       renderStatModal();
     }
+    else if (condition === "hint") {
+      renderHintModal();
+    }
   }
 
   function renderWinModal() {
@@ -1092,6 +1097,26 @@ function resetGame() {
     p2.append(span2);
 
     modalContainer.append(h2, p1, p2);
+
+    document.body.style.overflow = "hidden";
+
+    const newGame = document.createElement("button");
+    newGame.textContent = "New Game";
+    newGame.className = "new-game-btn";
+    const restartGame = document.createElement("button");
+    restartGame.textContent = "Restart Game";
+    restartGame.className = "restart-game-btn";
+
+    modalContainer.append(newGame, restartGame);
+
+    restartGame.addEventListener("click", () => {
+      resetGame();
+      hideModalPopup();
+    })
+
+    newGame.addEventListener("click", () => {
+      window.location.reload();
+    });
   }
 
   function renderLoseModal() {
@@ -1139,6 +1164,32 @@ function resetGame() {
 
     newGame.addEventListener("click", () => {
       window.location.reload();
+    });
+  }
+
+  function renderHintModal() {
+    const movesCount = countWinningPairs();
+    const availableMoves = movesCount > 5 ? "5+" : movesCount;
+
+    const h1 = document.createElement("h1");
+    h1.textContent = "⭐️ Hint ⭐️";
+    modalContainer.append(h1);
+
+    const h2 = document.createElement("h2");
+    h2.className = "hint-h2";
+    h2.textContent = `You have ${availableMoves} moves available.`
+    modalContainer.append(h2);
+
+    document.body.style.overflow = "hidden";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent = "Close ⛌";
+    closeBtn.className = "restart-game-btn";
+
+    modalContainer.append(closeBtn);
+
+    closeBtn.addEventListener("click", () => {
+      hideModalPopup();
     });
   }
 
