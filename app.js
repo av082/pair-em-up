@@ -1,5 +1,5 @@
 // import { createUI } from "/ui.js";
-const MAX_SCORE = 100;
+const MAX_SCORE = 3;
 const MAXCOL = 9;
 const sourceArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9];
 let gameMode = ""
@@ -22,7 +22,7 @@ const uiSettings = {
   night: false,
 }
 
-const gameLog = [];
+let currentGameResult = {};
 
 generateMatrix()
 function generateMatrix(arr = sourceArr, gMode) {
@@ -373,7 +373,7 @@ function generateUI() {
   timer.textContent = "Timer";
   const score = document.createElement("div");
   score.className = "score";
-  score.textContent = `Score: ${gameScore === null ? 0 : gameScore} of 100`;
+  score.textContent = `Score: ${gameScore === null ? 0 : gameScore} of ${MAX_SCORE}`;
   const progressContainer = document.createElement("div");
   progressContainer.className = "progress-container";
 
@@ -387,7 +387,7 @@ function generateUI() {
 
   let observer = new MutationObserver(el => {
     const parentWidth = progressContainer.offsetWidth;
-    const barLength = Math.round(parentWidth / 100 * gameScore);
+    const barLength = Math.round(parentWidth / MAX_SCORE * gameScore);
     if (barLength <= parentWidth) {
       progressContainer.style.setProperty("--bar-width", `${barLength}px`);
     } else {
@@ -626,7 +626,7 @@ function canSelect(r1, c1, r2, c2) {
 }
 
 function hasWon() {
-  if (gameScore >=100) {
+  if (gameScore >= MAX_SCORE) {
     gameStats = 
     envokeModalPopup("win");
     return true;
@@ -672,11 +672,11 @@ function updateScore(value1, value2) {
     gameScore += 1;
   }
 
-  if (gameScore > 100) gameScore = 100;
+  if (gameScore > MAX_SCORE) gameScore = MAX_SCORE;
 
   movesTotal += 1;
 
-  scoreEl.textContent = `Score: ${gameScore} of 100`;
+  scoreEl.textContent = `Score: ${gameScore} of ${MAX_SCORE}`;
 }
 
 function shuffle(array){
@@ -968,7 +968,7 @@ function deactivateUndoButton() {
 
 function updateScoreUI() {
   const score = document.querySelector(".scoreWrapper .score");
-  score.textContent = `Score: ${gameScore} of 100`;
+  score.textContent = `Score: ${gameScore} of ${MAX_SCORE}`;
 }
 
 function updateControlsUI() {
@@ -1072,29 +1072,29 @@ function envokeModalPopup(condition) {
   const modalContainer = document.createElement("div");
   modalContainer.id = "modalContainer";
   document.body.prepend(background);
-  document.body.prepend(modalContainer);
+  background.append(modalContainer);
 
   if (condition === "win") {
     setResultTime();
     saveGameResults("won");
-    renderWinModal();
+    renderWinModal(modalContainer);
     playSound("win");
   }
   else if (condition === "lose") {
     setResultTime();
     saveGameResults("lost");
-    renderLoseModal();
+    renderLoseModal(modalContainer);
     playSound("lose");
   }
   else if (condition === "stat") {
-    renderResultsModal();
+    renderResultsModal(modalContainer);
   }
   else if (condition === "hint") {
-    renderHintModal();
+    renderHintModal(modalContainer);
   }
 }
 
-function renderWinModal() {
+function renderWinModal(modalContainer) {
   const h1 = document.createElement("h1");
   h1.textContent = "Congratulations! 🎉";
   modalContainer.append(h1);
@@ -1105,7 +1105,7 @@ function renderWinModal() {
   const p1 = document.createElement("p");
   const span1 = document.createElement("span");
   p1.textContent = "You scored: ";
-  span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
+  span1.textContent = `${gameScore === null ? 0 : gameScore} out of ${MAX_SCORE}.`;
   p1.append(span1);
   
   const p2 = document.createElement("p");
@@ -1121,23 +1121,32 @@ function renderWinModal() {
   const newGame = document.createElement("button");
   newGame.textContent = "New Game";
   newGame.className = "new-game-btn";
+
   const restartGame = document.createElement("button");
   restartGame.textContent = "Restart Game";
   restartGame.className = "restart-game-btn";
 
-  modalContainer.append(newGame, restartGame);
+  const showStats = document.createElement("button");
+  showStats.textContent = "Show Stats";
+  showStats.className = "restart-game-btn";
 
-  restartGame.addEventListener("click", () => {
+  modalContainer.append(newGame, restartGame, showStats);
+
+  restartGame.addEventListener("click", (e) => {
     resetGame();
-    hideModalPopup();
+    hideModalPopup(e);
   })
 
   newGame.addEventListener("click", () => {
     window.location.reload();
   });
+
+  showStats.addEventListener("click", () => {
+    envokeModalPopup("stat");
+  });
 }
 
-function renderLoseModal() {
+function renderLoseModal(modalContainer) {
   const h1 = document.createElement("h1");
   h1.textContent = "You lost! 😢";
   modalContainer.append(h1);
@@ -1148,7 +1157,7 @@ function renderLoseModal() {
   const p1 = document.createElement("p");
   const span1 = document.createElement("span");
   p1.textContent = "You scored: ";
-  span1.textContent = `${gameScore === null ? 0 : gameScore} out of 100.`;
+  span1.textContent = `${gameScore === null ? 0 : gameScore} out of ${MAX_SCORE}.`;
   p1.append(span1);
   
   const p2 = document.createElement("p");
@@ -1165,23 +1174,32 @@ function renderLoseModal() {
   const newGame = document.createElement("button");
   newGame.textContent = "New Game";
   newGame.className = "new-game-btn";
+
   const restartGame = document.createElement("button");
   restartGame.textContent = "Restart Game";
   restartGame.className = "restart-game-btn";
 
-  modalContainer.append(newGame, restartGame);
+  const showStats = document.createElement("button");
+  showStats.textContent = "Show Stats";
+  showStats.className = "restart-game-btn";
 
-  restartGame.addEventListener("click", () => {
+  modalContainer.append(newGame, restartGame, showStats);
+
+  restartGame.addEventListener("click", (e) => {
     resetGame();
-    hideModalPopup();
+    hideModalPopup(e);
   })
 
   newGame.addEventListener("click", () => {
     window.location.reload();
   });
+
+  showStats.addEventListener("click", () => {
+    envokeModalPopup("stat");
+  })
 }
 
-function renderHintModal() {
+function renderHintModal(modalContainer) {
   const movesCount = countWinningPairs();
   const availableMoves = movesCount > 5 ? "5+" : movesCount;
 
@@ -1202,15 +1220,60 @@ function renderHintModal() {
 
   modalContainer.append(closeBtn);
 
-  closeBtn.addEventListener("click", () => {
-    hideModalPopup();
+  closeBtn.addEventListener("click", (e) => {
+    hideModalPopup(e);
   });
 }
 
-function renderResultsModal() {
+function renderResultsModal(modalContainer) {
   const h1 = document.createElement("h1");
   h1.textContent = "Game Statistics";
   modalContainer.append(h1);
+  modalContainer.closest("#modalBackground").style.zIndex = "9200";
+
+  if (Object.keys(currentGameResult).length > 0) {
+    const h21 = document.createElement("h2");
+    h21.className = "game-results-h2";
+    h21.textContent = "Current Game Results"
+    modalContainer.append(h21);
+
+    const container = document.createElement("div");
+    container.className = "grid-container";
+    modalContainer.append(container);
+
+    const columns = ["Mode", "Score", "Outcome", "Time", "Moves"];
+    for (let col of columns) {
+      const p = document.createElement("p");
+      p.className = "stat-header";
+      p.textContent = col;
+      container.append(p);
+    }
+
+    for (const key in currentGameResult) {
+      const p = document.createElement("p");
+
+      if (
+        typeof currentGameResult[key] === "object" &&
+        currentGameResult[key] !== null &&
+        "time" in currentGameResult
+      ) {
+        p.textContent = `${currentGameResult[key].time}`;
+      } else {
+        p.textContent = `${
+          typeof currentGameResult[key] === "string"
+            ? currentGameResult[key][0].toUpperCase() + currentGameResult[key].slice(1)
+            : currentGameResult[key]
+        }`;
+      }
+
+      container.append(p);
+    }
+
+    const h22 = document.createElement("h2");
+    h22.className = "game-results-h2";
+    h22.textContent = "Recent Games";
+    modalContainer.append(h22);
+  }
 
   const container = document.createElement("div");
   container.className = "grid-container";
@@ -1257,17 +1320,32 @@ function renderResultsModal() {
 
   modalContainer.append(closeBtn);
 
-  closeBtn.addEventListener("click", () => {
-    hideModalPopup();
+  closeBtn.addEventListener("click", (e) => {
+    hideModalPopup(e);
   });
 }
 
-function hideModalPopup() {
-  modalContainer.style.dysplay = "none"
-  modalBackground.style.display = "none";
-  modalContainer.remove();
-  modalBackground.remove();
+function hideModalPopup(e) {
+  const container = e.target.closest("#modalContainer");
+  const background = e.target.closest("#modalBackground");
+
+  if (container) {
+    container.style.display = "none";
+    container.remove();
+  }
+
+  if (background) {
+    background.style.display = "none";
+    background.remove();
+  }
+
   document.body.style.overflow = "";
+
+  // modalContainer.style.display = "none"
+  // modalBackground.style.display = "none";
+  // modalContainer.remove();
+  // modalBackground.remove();
+  // document.body.style.overflow = "";
 }
 // ===========================================================
 
@@ -1288,6 +1366,8 @@ function saveGameResults(outcome) {
     time: resultTime,
     movesTotal: movesTotal,
   }
+
+  currentGameResult = structuredClone(data);
 
   const key = "PairEmGameStats";
 

@@ -575,3 +575,7 @@ input:checked + .theme-slider:before {
 #modalContainer .stat-header {
   font-weight: 600;
 }
+
+#modalContainer .game-results-h2 {
+  margin-bottom: 0;
+}
