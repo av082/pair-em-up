@@ -29,7 +29,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  min-width: 380px;
+  min-width: 340px;
   background-color: var(--bg);
   color: var(--font-color);
   width: 100%;
@@ -237,6 +237,11 @@ input[type='radio']:checked + span {
 .container h1 {
   margin: 0;
   color: #4386ed;
+}
+
+.titleWrapper h1 a {
+  all: inherit;
+  cursor: pointer;
 }
 
 .headerWrapper {
@@ -743,7 +748,6 @@ input:checked + .theme-slider:before {
     padding: 7px 3px;
   }
 }
-
 
 @media screen and (max-width: 380px) {
   #modalContainer {

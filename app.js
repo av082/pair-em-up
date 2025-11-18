@@ -187,7 +187,10 @@ function generateUI() {
   headerWrapper.append(titleWrapper);
 
   const h1 = document.createElement("h1");
-  h1.textContent = "Pair 'em Game";
+  const link = document.createElement("a");
+  link.href = "/";
+  link.textContent = "Pair 'em Up Game";
+  h1.append(link);
   titleWrapper.prepend(h1);
 
   const selectedMode = document.createElement("p");
