@@ -415,7 +415,7 @@ main {
 
 .play-field {
   display: grid;
-  grid-template-columns: repeat(9, auto);
+  grid-template-columns: repeat(9, 1fr);
   gap: 2px;
   align-items: center;
   justify-items: center;
