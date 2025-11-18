@@ -37,6 +37,7 @@ body {
 
 main {
   width: 100%;
+  box-sizing: border-box;
 }
 
 a {
@@ -417,6 +418,7 @@ main {
   gap: 2px;
   align-items: center;
   justify-items: center;
+  width: 100%;
 }
 
 .play-item {
