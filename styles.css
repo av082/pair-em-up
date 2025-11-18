@@ -420,6 +420,7 @@ main {
   align-items: center;
   justify-items: center;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .play-item {
