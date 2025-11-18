@@ -1,5 +1,5 @@
 // import { createUI } from "/ui.js";
-const MAX_SCORE = 3;
+const MAX_SCORE = 100;
 const MAXCOL = 9;
 const sourceArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 1, 1, 2, 1, 3, 1, 4, 1, 5, 1, 6, 1, 7, 1, 8, 1, 9];
 let gameMode = ""
@@ -235,6 +235,17 @@ function generateUI() {
   themeToggle.append(themeSlider);
   toolsBlock.append(themeToggle);
 
+  // const savedTheme = localStorage.getItem("gameTheme");
+  // if (savedTheme === "dark") {
+  //   document.documentElement.setAttribute("data-theme", "dark");
+  //   themeCheckbox.checked = true;
+  // }
+
+  // toggleCheckbox.addEventListener("change", () => {
+  //   const isDark = toggleCheckbox.checked;
+  //   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+  //   localStorage.setItem("theme", isDark ? "dark" : "light");
+  // });
 
   const btnsBlock = document.createElement("div");
   btnsBlock.className = "btnsBlock";
@@ -869,6 +880,23 @@ setMasterVolume();
 soundCheckbox.addEventListener("change", (e) => {
   setMasterVolume(e.target.checked);
 });
+
+function setDarkTheme() {
+  const themeToggleCheckbox = document.querySelector(".theme-switch input");
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    themeToggleCheckbox.checked = true;
+  }
+
+  themeToggleCheckbox.addEventListener("change", () => {
+    const isDark = themeToggleCheckbox.checked;
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "");
+    localStorage.setItem("theme", isDark ? "dark" : "");
+  });
+}
+setDarkTheme();
 
 
 function stopWatch(el) {

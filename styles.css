@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Forum&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+:root {
+  --bg: #fff;
+  --bg-rgb: 255, 255, 255;
+  --font-color: #111;
+  --btn-bg-blue-hover: 67, 135, 237;
+  --modal-box-shadow: rgba(0,0,0,0.41);
+}
+
+[data-theme="dark"] {
+  --bg: #111;
+  --bg-rgb: 17, 17, 17;
+  --font-color: #fff;
+  --btn-bg-blue-hover: rgba(67, 135, 237, 0.3);
+  --modal-box-shadow: rgba(255, 255, 255, 0.41);
+}
+
 body {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
@@ -8,6 +24,8 @@ body {
   padding: 0;
   height: 100vh;
   min-width: 380px;
+  background-color: var(--bg);
+  color: var(--font-color);
 }
 
 main {
@@ -22,7 +40,7 @@ a {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.851);
+  background: rgba(var(--bg-rgb), 0.851);
   display: flex;
   align-items: start;
   justify-content: center;
@@ -33,7 +51,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: white;
+  background: var(--bg);
   padding: 50px;
   border-radius: 12px;
   text-align: center;
@@ -42,9 +60,9 @@ a {
   margin-right: 15px;
   width: 100%;
   max-width: 415px;
-  box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
-  -webkit-box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
-  -moz-box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
+  box-shadow: 0px 0px 41px 4px var(--modal-box-shadow);
+  -webkit-box-shadow: 0px 0px 41px 4px var(--modal-box-shadow);
+  -moz-box-shadow: 0px 0px 41px 4px var(--modal-box-shadow);
 }
 
 .modal-content a {
@@ -54,7 +72,7 @@ a {
 .load-prev-game-btn {
   display: none;
   margin-top: 30px;
-  background-color: #fff;
+  background-color: var(--bg);
   border: 2px solid #4386ed;
   border-radius: 25px;
   padding: 10px 20px;
@@ -63,7 +81,7 @@ a {
 }
 
 .load-prev-game-btn:hover {
-  background-color: rgba(67, 135, 237, 0.1);
+  background-color: var(--btn-bg-blue-hover);
 }
 
 .mode-buttons {
@@ -82,7 +100,7 @@ a {
   display: inline-flex;
   align-items: center;
   position: relative;
-  background-color: #fff;
+  background-color: var(--bg);
   color: #a4a4a4;
   font-weight: 400;
   letter-spacing: 1px;
@@ -183,6 +201,7 @@ input[type='radio']:checked + span {
   margin: 0;
   font-weight: 600;
   font-size: 38px;
+  color: var(--font-color);
 }
 
 .modal-content h2 {
@@ -190,6 +209,7 @@ input[type='radio']:checked + span {
   margin-top: 30px;
   font-weight: 400;
   font-size: 20px;
+  color: var(--font-color);
 }
 
 
@@ -250,7 +270,7 @@ input[type='radio']:checked + span {
   border: 1px solid #4386ed;
   border-radius: 10px;
   padding: 2px 7px;
-  background-color: #fff;
+  background-color: var(--bg);
 }
 
 .btnsBlock [data-type='continue'] {
@@ -284,7 +304,7 @@ main {
   font-weight: 400;
   line-height: 1;
   text-align: start;
-  background-color: #fff;
+  background-color: var(--bg);
   border: 2px solid #4386ed;
   border-radius: 20px;
   padding: 5px 5px;
@@ -293,7 +313,7 @@ main {
 }
 
 .buttonsWrapper button:hover {
-  background-color: rgba(67, 135, 237, 0.1);
+  background-color: rgba(var(--btn-bg-blue-hover), 0.1);
 }
 
 .buttonsWrapper span {
@@ -384,6 +404,7 @@ main {
   align-items: center;
   font-size: 30px;
   border-radius: 10px;
+  color: var(--font-color);
   transition: all 0.1s ease;
 }
 
@@ -559,7 +580,7 @@ input:checked + .theme-slider:before {
 #modalBackground {
   position: fixed;
   inset: 0;
-  background: rgba(255, 255, 255, 0.851);
+  background: rgba(var(--bg-rgb), 0.851);
   z-index: 9000;
 }
 
@@ -571,13 +592,13 @@ input:checked + .theme-slider:before {
   max-width: 450px;
   width: 100%;
   z-index: 9100;
-  background-color: #fff;
+  background-color: var(--bg);
   border-radius: 12px;
   padding: 50px;
   text-align: center;
-  box-shadow: 10px 10px 41px -1px rgba(0, 0, 0, 0.41);
-  -webkit-box-shadow: 10px 10px 41px -1px rgba(0, 0, 0, 0.41);
-  -moz-box-shadow: 10px 10px 41px -1px rgba(0,0,0,0.41);
+  box-shadow: 0px 0px 41px 4px var(--modal-box-shadow);
+  -webkit-box-shadow: 0px 0px 41px 4px var(--modal-box-shadow);
+  -moz-box-shadow: 0px 0px 41px 4px var(--modal-box-shadow));
 }
 
 #modalContainer h2 {
@@ -686,3 +707,4 @@ input:checked + .theme-slider:before {
     margin-top: 6vh;
   }
 }
+
