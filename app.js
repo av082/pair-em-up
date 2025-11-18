@@ -166,6 +166,8 @@ function generateUI() {
     startScreen.style.display = "none";
   })
 
+  // createTools(modalContent);
+
   // ==================================================
   // GAME FIELD
   // ==================================================
@@ -234,18 +236,6 @@ function generateUI() {
   themeSlider.className = "theme-slider";
   themeToggle.append(themeSlider);
   toolsBlock.append(themeToggle);
-
-  // const savedTheme = localStorage.getItem("gameTheme");
-  // if (savedTheme === "dark") {
-  //   document.documentElement.setAttribute("data-theme", "dark");
-  //   themeCheckbox.checked = true;
-  // }
-
-  // toggleCheckbox.addEventListener("change", () => {
-  //   const isDark = toggleCheckbox.checked;
-  //   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
-  //   localStorage.setItem("theme", isDark ? "dark" : "light");
-  // });
 
   const btnsBlock = document.createElement("div");
   btnsBlock.className = "btnsBlock";
