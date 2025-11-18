@@ -804,19 +804,32 @@ const masterGain = audioCtx.createGain();
 masterGain.gain.value = 1;
 masterGain.connect(audioCtx.destination);
 
-function playSound(key, volume = 1) {
+async function playSound(key, volume = 1) {
+  if (audioCtx.state === 'suspended') {
+    try {
+      await audioCtx.resume();
+    } catch (error) {
+      console.log('AudioContext не может быть запущен:', error);
+      return;
+    }
+  }
+
   if (!soundBuffers[key]) return;
 
-  const source = audioCtx.createBufferSource();
-  source.buffer = soundBuffers[key];
-
-  const gainNode = audioCtx.createGain();
-  gainNode.gain.value = volume;
-
-  source.connect(gainNode);
-  gainNode.connect(masterGain);
-
-  source.start();
+  try {
+    const source = audioCtx.createBufferSource();
+    source.buffer = soundBuffers[key];
+  
+    const gainNode = audioCtx.createGain();
+    gainNode.gain.value = volume;
+  
+    source.connect(gainNode);
+    gainNode.connect(masterGain);
+  
+    source.start();
+  } catch {
+    console.log("Звук...");
+  }
 }
 
 
