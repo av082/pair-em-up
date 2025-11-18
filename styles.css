@@ -491,6 +491,8 @@ main {
   flex-direction: row;
   justify-content: end;
   align-items: center;
+  min-width: 180px;
+  margin-top: 20px;
 }
 
 .sound-switch,
@@ -557,8 +559,8 @@ input:checked + .theme-slider:before {
 .theme-icon-wrapper,
 .stats-icon-wrapper {
   display: inline-block;
-  width: 100%;
-  height: 100%;
+  width: 20px;
+  height: 20px;
   max-height: 20px;
   max-width: 20px;
   padding-right: 5px;

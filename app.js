@@ -166,7 +166,9 @@ function generateUI() {
     startScreen.style.display = "none";
   })
 
-  // createTools(modalContent);
+  // create settings block
+  createTools(modalContent);
+  
 
   // ==================================================
   // GAME FIELD
@@ -197,45 +199,8 @@ function generateUI() {
   settingsWrapper.className = "settingsWrapper";
   headerWrapper.append(settingsWrapper);
 
-  const toolsBlock = document.createElement("div");
-  toolsBlock.className = "settingsBlock";
-  settingsWrapper.append(toolsBlock);
-
-  const statsIconWrapper = document.createElement("div");
-  statsIconWrapper.className = "stats-icon-wrapper";
-  toolsBlock.append(statsIconWrapper);
-  statsIconWrapper.addEventListener("click", () => {
-    envokeModalPopup("stat");
-  })
-
-  const soundIconWrapper = document.createElement("div")
-  soundIconWrapper.className = "sound-icon-wrapper";
-  toolsBlock.append(soundIconWrapper);
-  
-  const soundToggle = document.createElement("label");
-  soundToggle.className = "sound-switch";
-  const soundCheckbox = document.createElement("input");
-  soundCheckbox.setAttribute("type", "checkbox");
-  soundToggle.append(soundCheckbox);
-
-  const soundSlider = document.createElement("span");
-  soundSlider.className = "sound-slider";
-  soundToggle.append(soundSlider);
-  toolsBlock.append(soundToggle);
-  
-  const themeIconWrapper = document.createElement("div")
-  themeIconWrapper.className = "theme-icon-wrapper";
-  toolsBlock.append(themeIconWrapper);
-  
-  const themeToggle = document.createElement("label");
-  themeToggle.className = "theme-switch";
-  const themeCheckbox = document.createElement("input");
-  themeCheckbox.setAttribute("type", "checkbox");
-  themeToggle.append(themeCheckbox);
-  const themeSlider = document.createElement("span");
-  themeSlider.className = "theme-slider";
-  themeToggle.append(themeSlider);
-  toolsBlock.append(themeToggle);
+  // create settings block
+  createTools(settingsWrapper);
 
   const btnsBlock = document.createElement("div");
   btnsBlock.className = "btnsBlock";
@@ -851,42 +816,73 @@ function playSound(key, volume = 1) {
   source.start();
 }
 
-function setMasterVolume(val) {
-  const soundBtn = document.querySelector(".sound-switch input");
-  const savedSetting = localStorage.getItem("soundSetting");
 
-  if (val === undefined) {
-    const isOn = savedSetting !== null ? savedSetting === "true" : true;
-    soundBtn.checked = isOn;
-    masterGain.gain.value = isOn ? 1 : 0;
-  } else {
-    masterGain.gain.value = val ? 1 : 0;
-    localStorage.setItem("soundSetting", val);
-  }
-}
-const soundCheckbox = document.querySelector(".sound-switch input");
-setMasterVolume();
+function initializeAllSettings() {
+  const soundCheckboxes = document.querySelectorAll('.sound-switch input');
+  soundCheckboxes.forEach(checkbox => {
+    setupSoundToggle(checkbox);
+  });
 
-soundCheckbox.addEventListener("change", (e) => {
-  setMasterVolume(e.target.checked);
-});
-
-function setDarkTheme() {
-  const themeToggleCheckbox = document.querySelector(".theme-switch input");
-  const savedTheme = localStorage.getItem("theme");
-
-  if (savedTheme === "dark") {
-    document.documentElement.setAttribute("data-theme", "dark");
-    themeToggleCheckbox.checked = true;
-  }
-
-  themeToggleCheckbox.addEventListener("change", () => {
-    const isDark = themeToggleCheckbox.checked;
-    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "");
-    localStorage.setItem("theme", isDark ? "dark" : "");
+  const themeCheckboxes = document.querySelectorAll('.theme-switch input');
+  themeCheckboxes.forEach(checkbox => {
+    setupThemeToggle(checkbox);
   });
 }
-setDarkTheme();
+initializeAllSettings();
+
+function setupSoundToggle(checkboxElement) {
+  if (!checkboxElement) return;
+  
+  const savedSetting = localStorage.getItem("soundSetting");
+  const isOn = savedSetting !== null ? savedSetting === "true" : true;
+  
+  checkboxElement.checked = isOn;
+  masterGain.gain.value = isOn ? 1 : 0;
+
+  checkboxElement.addEventListener("change", (e) => {
+    const isChecked = e.target.checked;
+    masterGain.gain.value = isChecked ? 1 : 0;
+    localStorage.setItem("soundSetting", isChecked);
+    syncAllSoundCheckboxes(isChecked);
+  });
+}
+
+function syncAllSoundCheckboxes(isChecked) {
+  const allSoundCheckboxes = document.querySelectorAll('.sound-switch input');
+  allSoundCheckboxes.forEach(checkbox => {
+    if (checkbox.checked !== isChecked) {
+      checkbox.checked = isChecked;
+    }
+  });
+}
+
+function setupThemeToggle(checkboxElement) {
+  if (!checkboxElement) return;
+  
+  const savedTheme = localStorage.getItem("theme");
+  const isDark = savedTheme === "dark";
+  
+  checkboxElement.checked = isDark;
+  if (isDark) {
+    document.documentElement.setAttribute("data-theme", "dark");
+  }
+
+  checkboxElement.addEventListener("change", (e) => {
+    const isDark = e.target.checked;
+    document.documentElement.setAttribute("data-theme", isDark ? "dark" : "");
+    localStorage.setItem("theme", isDark ? "dark" : "");
+    syncAllThemeCheckboxes(isDark);
+  });
+}
+
+function syncAllThemeCheckboxes(isDark) {
+  const allThemeCheckboxes = document.querySelectorAll('.theme-switch input');
+  allThemeCheckboxes.forEach(checkbox => {
+    if (checkbox.checked !== isDark) {
+      checkbox.checked = isDark;
+    }
+  });
+}
 
 
 function stopWatch(el) {
@@ -1414,4 +1410,47 @@ function saveGameResults(outcome) {
 
 function getGameResults() {
   return JSON.parse(localStorage.getItem("PairEmGameStats"));
+}
+
+
+function createTools(container) {
+  const toolsBlock = document.createElement("div");
+  toolsBlock.className = "settingsBlock";
+  container.append(toolsBlock);
+
+  const statsIconWrapper = document.createElement("div");
+  statsIconWrapper.className = "stats-icon-wrapper";
+  toolsBlock.append(statsIconWrapper);
+  statsIconWrapper.addEventListener("click", () => {
+    envokeModalPopup("stat");
+  })
+
+  const soundIconWrapper = document.createElement("div")
+  soundIconWrapper.className = "sound-icon-wrapper";
+  toolsBlock.append(soundIconWrapper);
+  
+  const soundToggle = document.createElement("label");
+  soundToggle.className = "sound-switch";
+  const soundCheckbox = document.createElement("input");
+  soundCheckbox.setAttribute("type", "checkbox");
+  soundToggle.append(soundCheckbox);
+
+  const soundSlider = document.createElement("span");
+  soundSlider.className = "sound-slider";
+  soundToggle.append(soundSlider);
+  toolsBlock.append(soundToggle);
+  
+  const themeIconWrapper = document.createElement("div")
+  themeIconWrapper.className = "theme-icon-wrapper";
+  toolsBlock.append(themeIconWrapper);
+  
+  const themeToggle = document.createElement("label");
+  themeToggle.className = "theme-switch";
+  const themeCheckbox = document.createElement("input");
+  themeCheckbox.setAttribute("type", "checkbox");
+  themeToggle.append(themeCheckbox);
+  const themeSlider = document.createElement("span");
+  themeSlider.className = "theme-slider";
+  themeToggle.append(themeSlider);
+  toolsBlock.append(themeToggle);
 }
