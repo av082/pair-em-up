@@ -37,6 +37,7 @@ body {
 
 main {
   width: 100%;
+  max-width: 100vh;
   box-sizing: border-box;
 }
 
@@ -236,6 +237,7 @@ input[type='radio']:checked + span {
 }
 
 .container h1 {
+  font-size: 36px;
   margin: 0;
   color: #4386ed;
 }
@@ -419,6 +421,7 @@ main {
   align-items: center;
   justify-items: center;
   width: 100%;
+  max-width: 100vh;
 }
 
 .play-item {
@@ -462,6 +465,8 @@ main {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
+  width: 100%;
+  max-width: 100vh;
 }
 
 .progressWrapper {
@@ -720,6 +725,9 @@ input:checked + .theme-slider:before {
   .buttonsWrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+  }
+  .container h1 {
+    font-size: 28px;
   }
   #revertBtn {
     grid-column: 3 / -1;
