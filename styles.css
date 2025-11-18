@@ -422,9 +422,11 @@ main {
   transition: all 0.1s ease;
 }
 
-.play-item:hover {
-  background-color: rgba(227, 222, 222, 0.3);
-  transform: scale(1.02);
+@media (hover: hover) {
+  .play-item:hover {
+    background-color: rgba(227, 222, 222, 0.3);
+    transform: scale(1.02);
+  }
 }
 
 .play-item.selected {
