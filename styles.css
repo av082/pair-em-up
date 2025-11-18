@@ -4,7 +4,7 @@
   --bg: #fff;
   --bg-rgb: 255, 255, 255;
   --font-color: #111;
-  --btn-bg-blue-hover: 67, 135, 237;
+  --btn-bg-blue-hover: rgba(67, 135, 237, 0.2);
   --modal-box-shadow: rgba(0,0,0,0.41);
 }
 
@@ -271,6 +271,15 @@ input[type='radio']:checked + span {
   border-radius: 10px;
   padding: 2px 7px;
   background-color: var(--bg);
+  transition: all 0.2s ease;
+}
+
+.btnsBlock button:hover {
+  background-color: var(--btn-bg-blue-hover);
+}
+
+.btnsBlock button:active {
+  transform: translateY(1px);
 }
 
 .btnsBlock [data-type='continue'] {
@@ -313,7 +322,12 @@ main {
 }
 
 .buttonsWrapper button:hover {
-  background-color: rgba(var(--btn-bg-blue-hover), 0.1);
+  background-color: var(--btn-bg-blue-hover);
+}
+
+.buttonsWrapper button:active {
+  transform: translateY(1px);
+  transform: scale(0.97);
 }
 
 .buttonsWrapper span {
