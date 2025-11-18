@@ -16,6 +16,12 @@
   --modal-box-shadow: rgba(255, 255, 255, 0.41);
 }
 
+html, body {
+  height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 body {
   font-family: "Roboto", sans-serif;
   font-optical-sizing: auto;
@@ -26,6 +32,7 @@ body {
   min-width: 380px;
   background-color: var(--bg);
   color: var(--font-color);
+  width: 100%;
 }
 
 main {
@@ -714,24 +721,32 @@ input:checked + .theme-slider:before {
   #modalContainer {
     top: 6vh;
   }
-}
-
-@media screen and (max-width: 619px) {
+  
   .mode-buttons {
     flex-direction: column;
   }
-
+  
   .modal-content h1 {
     font-size: 34px;
   }
-
+  
   .modal-content {
     margin-top: 6vh;
   }
-}
-
-@media screen and (max-width: 619px) {
+  
   #modalContainer .grid-container {
     font-size: 14px;
   }
+
+  #modalContainer .grid-container p:nth-of-type(n + 6) {
+    margin: 0;
+    padding: 7px 3px;
+  }
+}
+
+
+@media screen and (max-width: 380px) {
+  #modalContainer {
+    padding: 15px;
+  }  
 }
