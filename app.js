@@ -304,10 +304,16 @@ function generateUI() {
   eraserUses.textContent = `${eraserUse}`;
   eraserBtn.append(eraserUses);
   buttonsWrapper.append(eraserBtn);
-  eraserBtn.addEventListener("click", () => {
+  eraserBtn.addEventListener("click", async () => {
     if (eraserUse > 0) {
       savePreviousState();
-      eraseNumber();
+      
+      try {
+        await eraseNumber();
+      } catch (err) {
+        ("Issues with Erase number:", err);
+      }
+      
       renderGridItems();
       eraserUse -= 1;
       eraserUses.textContent = `${eraserUse}`;
@@ -703,8 +709,16 @@ function eraseNumber(matrix = mainMatrix) {
   const randomEl = elements[randomIndex];
 
   const domEl = document.querySelector(`.play-item[data-row="${randomEl.row}"][data-col="${randomEl.col}"]`);
-  domEl.textContent = "";
-  mainMatrix[randomEl.row][randomEl.col] = undefined;
+  domEl.classList.add("error", "shake");
+
+  return new Promise(resolve => {
+    domEl.addEventListener("animationend", () => {
+      domEl.textContent = "";
+      mainMatrix[randomEl.row][randomEl.col] = undefined;
+      domEl.classList.remove("error", "shake");
+      resolve();
+    }, {once: true});
+  });
 }
 
 
