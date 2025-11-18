@@ -247,8 +247,7 @@ function generateUI() {
   controls.append(buttonsWrapper);
 
   const appendBtn = document.createElement("button");
-  // appendBtn.textContent = "Add nums";
-  // appendBtn.append(document.createElement("br"));
+  appendBtn.title = "Add new numbers";
 
   const addIcon = document.createElement("span");
   addIcon.classList = "add-icon";
@@ -270,8 +269,8 @@ function generateUI() {
 
   // Shuffle Numbers Button
   const shuffleBtn = document.createElement("button");
-  // shuffleBtn.textContent = "Shuffle";
-  // shuffleBtn.append(document.createElement("br"));
+  shuffleBtn.title = "Shuffle numbers";
+
   const shuffleIcon = document.createElement("span");
   shuffleIcon.classList = "shuffle-icon";
   shuffleBtn.append(shuffleIcon);
@@ -293,8 +292,8 @@ function generateUI() {
   
   // Eraser Button
   const eraserBtn = document.createElement("button");
-  // eraserBtn.textContent = "Erase";
-  // eraserBtn.append(document.createElement("br"));
+  eraserBtn.title = "Erase random number";
+  
   const eraseIcon = document.createElement("span");
   eraseIcon.classList = "erase-icon";
   eraserBtn.append(eraseIcon);
@@ -307,7 +306,7 @@ function generateUI() {
   eraserBtn.addEventListener("click", async () => {
     if (eraserUse > 0) {
       savePreviousState();
-      
+
       try {
         await eraseNumber();
       } catch (err) {
@@ -322,8 +321,8 @@ function generateUI() {
   
   // Hint Button
   const hintBtn = document.createElement("button");
-  // hintBtn.textContent = "Hints";
-  // hintBtn.append(document.createElement("br"));
+  hintBtn.title = "Get a hint";
+
   const hintIcon = document.createElement("span");
   hintIcon.classList = "hint-icon";
   hintBtn.append(hintIcon);
@@ -346,6 +345,7 @@ function generateUI() {
   
   // Revert Button
   const revertBtn = document.createElement("button");
+  revertBtn.title = "Undo previous move";
   revertBtn.className = "revert-btn";
   revertBtn.id = "revertBtn";
   revertBtn.disabled = true;
