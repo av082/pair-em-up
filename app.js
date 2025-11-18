@@ -188,7 +188,7 @@ function generateUI() {
 
   const h1 = document.createElement("h1");
   const link = document.createElement("a");
-  link.href = "/";
+  link.href = "https://av082.github.io/pair-em-up/";
   link.textContent = "Pair 'em Up Game";
   h1.append(link);
   titleWrapper.prepend(h1);
