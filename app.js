@@ -1317,29 +1317,38 @@ function renderResultsModal(modalContainer) {
   }
 
   const gameResults = getGameResults();
-  gameResults.sort((a, b) => b.time.elapsed - a.time.elapsed);
+  
+  if (gameResults !== null) {
+    gameResults.sort((a, b) => b.time.elapsed - a.time.elapsed);
 
-  gameResults.forEach((object => {
-    for (const key in object) {
-      const p = document.createElement("p");
+    gameResults.forEach((object => {
+      for (const key in object) {
+        const p = document.createElement("p");
 
-      if (
-        typeof object[key] === "object" &&
-        object[key] !== null &&
-        "time" in object
-      ) {
-        p.textContent = `${object[key].time}`;
-      } else {
-        p.textContent = `${
-          typeof object[key] === "string"
-            ? object[key][0].toUpperCase().slice(0) + object[key].slice(1)
-            : object[key]
-        }`;
+        if (
+          typeof object[key] === "object" &&
+          object[key] !== null &&
+          "time" in object
+        ) {
+          p.textContent = `${object[key].time}`;
+        } else {
+          p.textContent = `${
+            typeof object[key] === "string"
+              ? object[key][0].toUpperCase().slice(0) + object[key].slice(1)
+              : object[key]
+          }`;
+        }
+
+        container.append(p);
       }
+    }))
+  } else {
+    const p = document.createElement("p");
+    p.className = "no-data";
+    p.textContent = "No game statistics yet."
 
-      container.append(p);
-    }
-  }))
+    container.append(p);
+  }
 
   document.body.style.overflow = "hidden";
 

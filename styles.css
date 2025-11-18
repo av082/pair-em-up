@@ -594,18 +594,20 @@ input:checked + .theme-slider:before {
 }
 
 #modalBackground {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
   position: fixed;
   inset: 0;
   background: rgba(var(--bg-rgb), 0.851);
   z-index: 9000;
+  overflow: auto;
 }
 
 #modalContainer {
   box-sizing: border-box;
-  position: fixed;
+  position: relative;
   top: 8vh;
-  left: 50%;
-  transform: translateX(-50%);
   max-width: 450px;
   width: 100%;
   z-index: 9100;
@@ -672,6 +674,10 @@ input:checked + .theme-slider:before {
   border-top: 1px solid #ccc;
   border-left: none;
   border-right: none;
+}
+
+#modalContainer .grid-container .no-data {
+  grid-column: 1 / -1;
 }
 
 #modalContainer .stat-header {
