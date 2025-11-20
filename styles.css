@@ -354,6 +354,21 @@ main {
   transform: scale(0.97);
 }
 
+.buttonsWrapper button:disabled,
+.buttonsWrapper button:disabled span {
+  border-color: #a4a4a4;
+  color: #a4a4a4;
+  pointer-events: none;
+}
+
+.buttonsWrapper button:disabled span:first-of-type {
+  background-color: #a4a4a4;
+}
+
+.buttonsWrapper button:disabled:hover {
+  background-color: unset;
+}
+
 .buttonsWrapper span {
   font-size: 16px;
   color: rgba(67, 135, 237, 0.696);

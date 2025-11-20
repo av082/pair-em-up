@@ -1025,6 +1025,7 @@ function restorePreviousState() {
 function activateUndoButton() {
   const btn = document.getElementById("revertBtn");
   if (btn) btn.disabled = false;
+  console.log("btn");
 }
 
 function deactivateUndoButton() {
@@ -1087,6 +1088,8 @@ function loadGameState() {
   gameMode = state.gameMode;
 
   if (state.previousState) {
+    setTimeout(activateUndoButton);
+
     previousState = {
       mainMatrix: state.previousState.mainMatrix.map((row) =>
         row.map((v) => (v === null ? undefined : v))
@@ -1097,6 +1100,7 @@ function loadGameState() {
       eraserUse: state.previousState.eraserUse,
       hintUse: state.previousState.hintUse,
     };
+
   } else {
     previousState = null;
   }
@@ -1500,3 +1504,25 @@ function createTools(container) {
   themeToggle.append(themeSlider);
   toolsBlock.append(themeToggle);
 }
+
+function toggleBtnsState() {
+  const btns = document.querySelectorAll(".buttonsWrapper button");
+  let observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      const btn = mutation.target.closest("button");
+      if (mutation.target.textContent <= 0) {
+        btn.disabled = true;
+      } else {
+        btn.disabled = false;
+      }
+    });
+  });
+
+  const btnsWrapper = document.querySelector(".buttonsWrapper");
+  observer.observe(btnsWrapper, {
+    childList: true,
+    characterData: true,
+    subtree: true
+  });
+}
+toggleBtnsState();
