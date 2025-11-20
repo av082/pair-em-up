@@ -264,6 +264,7 @@ function generateUI() {
       appendNumbers();
       addNumber -= 1;
       appendUses.textContent = `${addNumber}`;
+      playSound("select");
     }
   });
 
@@ -287,6 +288,7 @@ function generateUI() {
       renderGridItems();
       shuffleUse -= 1;
       shuffleUses.textContent = `${shuffleUse}`;
+      playSound("select");
     }
   });
   
@@ -316,6 +318,7 @@ function generateUI() {
       renderGridItems();
       eraserUse -= 1;
       eraserUses.textContent = `${eraserUse}`;
+      playSound("select");
     }
   });
   
@@ -340,6 +343,7 @@ function generateUI() {
       hintUse -= 1;
       hintsUses.textContent = `${hintUse}`;
       envokeModalPopup("hint");
+      playSound("select");
     }
   });
   
@@ -353,7 +357,10 @@ function generateUI() {
   revertIcon.className = "revert-icon";
   revertBtn.append(revertIcon);
   buttonsWrapper.append(revertBtn);
-  revertBtn.addEventListener("click", restorePreviousState);
+  revertBtn.addEventListener("click", () => {
+    restorePreviousState();
+    playSound("select");
+  });
 
 
   // Timer, Score, Modes
